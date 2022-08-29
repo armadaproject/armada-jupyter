@@ -19,8 +19,6 @@ def create_jupyter_pod():
     """
 
     return core_v1.PodSpec(
-        hostNetwork=True,
-        setHostnameAsFQDN=True,
         containers=[
             core_v1.Container(
                 name="jupyter-notebook",
