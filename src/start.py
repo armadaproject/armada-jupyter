@@ -56,7 +56,9 @@ def create_jupyter_ingress():
     Create a jupyter ingress.
     """
 
-    return submit_pb2.IngressConfig(ports=[8888], tls_enabled=False)
+    return submit_pb2.IngressConfig(
+        ports=[8888], tls_enabled=False, use_cluster_ip=True
+    )
 
 
 def jupyter_workflow():
