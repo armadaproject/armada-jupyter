@@ -27,12 +27,12 @@ def create_jupyter_pod():
                 securityContext=core_v1.SecurityContext(runAsUser=1000),
                 resources=core_v1.ResourceRequirements(
                     requests={
-                        "cpu": api_resource.Quantity(string="2000m"),
-                        "memory": api_resource.Quantity(string="2000Mi"),
+                        "cpu": api_resource.Quantity(string="1000m"),
+                        "memory": api_resource.Quantity(string="1000Mi"),
                     },
                     limits={
-                        "cpu": api_resource.Quantity(string="2000m"),
-                        "memory": api_resource.Quantity(string="2000Mi"),
+                        "cpu": api_resource.Quantity(string="1000m"),
+                        "memory": api_resource.Quantity(string="1000Mi"),
                     },
                 ),
             )
