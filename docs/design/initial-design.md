@@ -44,15 +44,15 @@ submissions:
 
 ### User Commands
 
-The user will be able to deploy a JupyterLab pod with a single command:
+The user will be able to submit a JupyterLab pod with a single command:
 
 ```bash
-armada-jupyter deploy --config config.yml
+armada-jupyter submit --config config.yml
 ```
 
 ### Accessing the JupyterLab pod
 
-After the deployment has been created, the user will be able to access the JupyterLab pod by visiting the URL that is printed to the console.
+After a pod has been submitted, the user will be able to access the JupyterLab pod by visiting the URL that is printed to the console.
 
 The console will also print the token needed to access the JupyterLab pod.
 
