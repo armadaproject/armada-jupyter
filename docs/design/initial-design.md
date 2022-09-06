@@ -1,4 +1,4 @@
-# Armada - Jupyter Deployment Design
+# Armada - JupyterLab Pod Design
 
 ## Problem Description
 
@@ -8,7 +8,7 @@ With minimal configuration changes to the Armada executor configuration, a user 
 
 ## Proposed Solution
 
-Users will be able to write a configuration file for setting up the JupyterLab pod, and then submit this with a single command. A single command will also allow for cancelling the deployment.
+Users will be able to write a configuration file for setting up the JupyterLab pod, and then submit this with a single command.
 
 ## Design
 
