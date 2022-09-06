@@ -4,7 +4,7 @@
 
 Armada's ability to submit jobs across clusters should be exploited to allow for the submission of per-user JupyterLab pods.
 
-With minimal configuration changes to the Armada executor configuration, a user should be able to submit a JupyterLab pod that is accessible from their browser using with a URL that is unique to them. This should all be done from one of the Armada Clients.
+With minimal configuration changes to the Armada executor configuration, a user should be able to submit a JupyterLab pod that is accessible from their browser using a URL that is unique to them. This should all be done from one of the Armada Clients.
 
 ## Proposed Solution
 
