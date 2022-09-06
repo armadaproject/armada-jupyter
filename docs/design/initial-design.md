@@ -2,7 +2,7 @@
 
 ## Problem Description
 
-Armada's ability to submit jobs across clusters should be exploited to allow for the submission of per-user JupyterLab pods.
+Armada's ability to submit jobs across clusters should be used to allow for the submission of per-user JupyterLab pods.
 
 With minimal configuration changes to the Armada executor configuration, a user should be able to submit a JupyterLab pod that is accessible from their browser using a URL that is unique to them. This should all be done from one of the Armada Clients.
 
@@ -10,11 +10,9 @@ With minimal configuration changes to the Armada executor configuration, a user 
 
 Users will be able to write a configuration file for setting up the JupyterLab pod, and then submit this with a single command. A single command will also allow for cancelling the deployment.
 
-## Current Questions
-
-- Should we write this in Python, or Go? (Go would have a single executable, which is probably better for the end user)
-
 ## Design
+
+The program will be designed in Python.
 
 ### Configuration File
 
