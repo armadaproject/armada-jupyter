@@ -8,7 +8,7 @@ With minimal configuration changes to the Armada executor configuration, a user 
 
 ## Proposed Solution
 
-Users will be able to write a configuration file for setting up the jupyterlab pod, and then submit this with a single command. A single command will also allow for cancelling the deployment.
+Users will be able to write a configuration file for setting up the JupyterLab pod, and then submit this with a single command. A single command will also allow for cancelling the deployment.
 
 ## Current Questions
 
@@ -21,12 +21,12 @@ Users will be able to write a configuration file for setting up the jupyterlab p
 The configuration file will allow for:
 
 - Control over the resources that are allocated to the pod
-- Control over the image that is used for the jupyterlab pod
+- Control over the image that is used for the JupyterLab pod
 - Control over the timeout for the pod
 
 In the future, we may want to allow for more configuration options, such as:
 
-- Control over the ingress configuration (For more complex armada deployments)
+- Control over the ingress configuration (For more complex Armada deployments)
 - Control over the storage configuration (e.g. persistent storage)
 - Control over Armada authentication (e.g. using a different authentication method)
 
@@ -36,7 +36,7 @@ The configuration file will be written in YAML, and will be passed to the Armada
 version: "0.1"
 
 submissions:
-- name: "jupyterlab"
+- name: "JupyterLab"
   image: "jupyter/tensorflow-notebook:latest"
   timeout: 36hrs
   resources:
@@ -46,7 +46,7 @@ submissions:
 
 ### User Commands
 
-The user will be able to deploy a jupyterlab pod with a single command:
+The user will be able to deploy a JupyterLab pod with a single command:
 
 ```bash
 armada-jupyter deploy --config config.yml
@@ -54,14 +54,14 @@ armada-jupyter deploy --config config.yml
 
 ### Accessing the JupyterLab pod
 
-After the deployment has been created, the user will be able to access the jupyterlab pod by visiting the URL that is printed to the console.
+After the deployment has been created, the user will be able to access the JupyterLab pod by visiting the URL that is printed to the console.
 
-The console will also print the token needed to access the jupyterlab pod.
+The console will also print the token needed to access the JupyterLab pod.
 
 ## Future Considerations
 
 - Build custom images for setups that are common within G-Research
 - Support a range of languages
-- Support more than just juypterlab (e.g VSCode for C#)
+- Support more than just JupyterLab (e.g VSCode for C#)
 - Renaming the project to something more generic (e.g. Armada Labratory, Armada Interactive)
 - Support a range of authentication methods as required by GR
