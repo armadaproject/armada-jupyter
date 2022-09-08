@@ -15,6 +15,3 @@ test = ["pytest~=7.1.2"]
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-py-modules = []
