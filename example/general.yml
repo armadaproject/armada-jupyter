@@ -10,9 +10,15 @@ submissions:
   # We Support "hrs" and "mins" for time
   timeout: 36hrs
 
+  # Resources are based on the Kubernetes resource model
   resources:
-    cpu: 1
-    memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 1Gi
 
-    # for gpu, we support "nvidia.com/gpu" and "amd.com/gpu"
-    nvidia.com/gpu: 1
+      # for gpu, we support "nvidia.com/gpu" and "amd.com/gpu"
+      nvidia.com/gpu: 1
+
+    requests:
+      cpu: 1
+      memory: 1Gi
