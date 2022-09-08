@@ -1,0 +1,27 @@
+version: "0.1"
+
+submissions:
+- name: "JupyterLab"
+  image: "jupyter/tensorflow-notebook:latest"
+
+  armada_queue: "default"
+  armada_priority: 1
+
+  # We Support "hrs" and "mins" for time
+  timeout: 36hrs
+
+  # Resources are based on the Kubernetes resource model
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+
+      # for gpu, we support "nvidia.com/gpu" and "amd.com/gpu"
+      nvidia.com/gpu: 1
+
+    requests:
+      cpu: 1
+      memory: 1Gi
+
+      # for gpu, we support "nvidia.com/gpu" and "amd.com/gpu"
+      nvidia.com/gpu: 1
