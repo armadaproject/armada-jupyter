@@ -16,12 +16,6 @@ submissions:
       cpu: 1
       memory: 1Gi
 
-      # for gpu, we support "nvidia.com/gpu" and "amd.com/gpu"
-      nvidia.com/gpu: 1
-
     requests:
       cpu: 1
       memory: 1Gi
-
-      # for gpu, we support "nvidia.com/gpu" and "amd.com/gpu"
-      nvidia.com/gpu: 1

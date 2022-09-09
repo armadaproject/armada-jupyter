@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Submit JupyterLab Pods to Armada"
 readme = "README.md"
 requires-python = ">=3.7,<3.10"
-dependencies = ["armada_client", "typer"]
+dependencies = ["armada_client", "typer", "pyyaml", "types-PyYAML"]
 license = { text = "Apache Software License" }
 authors = [{ name = "G-Research Open Source Software", email = "armada@armadaproject.io" }]
 

@@ -36,7 +36,7 @@ version: "0.1"
 submissions:
 - name: "JupyterLab"
   image: "jupyter/tensorflow-notebook:latest"
-  timeout: 36hrs
+  timeout: 36h
   resources:
     cpu: 1
     memory: 1Gi
