@@ -143,8 +143,8 @@ def k8s_resources_from_dict(
 
     changed: Dict[str, Optional[K8sResourceOptions]] = {}
 
-    if limits is None and requests is None:
-        raise ValueError("Must specify at least one of limits or requests")
+    if limits is None or requests is None:
+        raise ValueError("Must specify both limits and requests")
 
     # Use a loop to save repeated code.
     for key, needs_changed in [(YMLSTR.limits, limits), (YMLSTR.requests, requests)]:
