@@ -2,6 +2,11 @@ from typing import List, Optional, Dict, Union
 
 import yaml
 
+from armada_client.k8s.io.api.core.v1 import generated_pb2 as core_v1
+from armada_client.k8s.io.apimachinery.pkg.api.resource import (
+    generated_pb2 as api_resource,
+)
+
 from armada_jupyter.constants import (
     YMLSTR,
     DEFAULT_QUEUE,
@@ -24,8 +29,8 @@ class K8sResourceOptions:
         nvidia_gpu: Union[str, int, None] = None,
         amd_gpu: Union[str, int, None] = None,
     ):
-        self.cpu = cpu
-        self.memory = memory
+        self.cpu = api_resource.Quantity(string=str(cpu))
+        self.memory = api_resource.Quantity(string=memory)
         self.nvidia_gpu = nvidia_gpu
         self.amd_gpu = amd_gpu
 
@@ -36,10 +41,10 @@ class K8sResourceOptions:
 
         # If they exist, they might be a string, so we need to convert them to int
         if self.nvidia_gpu:
-            self.nvidia_gpu = int(self.nvidia_gpu)
+            self.nvidia_gpu = api_resource.Quantity(string=str(nvidia_gpu))
 
         if self.amd_gpu:
-            self.amd_gpu = int(self.amd_gpu)
+            self.amd_gpu = api_resource.Quantity(string=str(amd_gpu))
 
     def __repr__(self) -> str:
         return (
@@ -135,6 +140,50 @@ class Submission:
             f"{YMLSTR.armada_queue}='{self.armada_queue}', "
             f"{YMLSTR.armada_priority}={self.armada_priority}, "
             f"{YMLSTR.timeout}='{self.timeout}', {YMLSTR.resources}={self.resources})"
+        )
+
+    def to_podspec(self) -> core_v1.PodSpec:
+        """
+        Converts a Submission to a kubernetes PodSpec
+        """
+
+        requests = {}
+        limits = {}
+
+        if self.resources:
+            requests = {
+                YMLSTR.cpu: self.resources.requests.cpu,
+                YMLSTR.memory: self.resources.requests.memory,
+            }
+
+            limits = {
+                YMLSTR.cpu: self.resources.limits.cpu,
+                YMLSTR.memory: self.resources.limits.memory,
+            }
+
+            if self.resources.requests.nvidia_gpu:
+                requests[YMLSTR.nvidia_gpu] = self.resources.requests.nvidia_gpu
+
+            if self.resources.requests.amd_gpu:
+                requests[YMLSTR.amd_gpu] = self.resources.requests.amd_gpu
+
+            if self.resources.limits.nvidia_gpu:
+                limits[YMLSTR.nvidia_gpu] = self.resources.limits.nvidia_gpu
+
+            if self.resources.limits.amd_gpu:
+                limits[YMLSTR.amd_gpu] = self.resources.limits.amd_gpu
+
+        return core_v1.PodSpec(
+            containers=[
+                core_v1.Container(
+                    name=self.name,
+                    image=self.image,
+                    securityContext=core_v1.SecurityContext(runAsUser=1000),
+                    resources=core_v1.ResourceRequirements(
+                        requests=requests, limits=limits
+                    ),
+                )
+            ]
         )
 
 

@@ -4,6 +4,11 @@ Testing Config class
 
 import pytest
 
+from armada_client.k8s.io.api.core.v1 import generated_pb2 as core_v1
+from armada_client.k8s.io.apimachinery.pkg.api.resource import (
+    generated_pb2 as api_resource,
+)
+
 from armada_jupyter.submissions import (
     get_submissions,
     Submission,
@@ -91,3 +96,66 @@ def test_submission_timeout(file, real_timeout):
 
     configs = get_submissions(file)
     assert configs[0].timeout == real_timeout
+
+
+fake_podspec_full = core_v1.PodSpec(
+    containers=[
+        core_v1.Container(
+            name="JupyterLab",
+            image="jupyter/tensorflow-notebook:latest",
+            securityContext=core_v1.SecurityContext(runAsUser=1000),
+            resources=core_v1.ResourceRequirements(
+                requests={
+                    "cpu": api_resource.Quantity(string="1"),
+                    "memory": api_resource.Quantity(string="1Gi"),
+                    "nvidia.com/gpu": api_resource.Quantity(string="1"),
+                },
+                limits={
+                    "cpu": api_resource.Quantity(string="1"),
+                    "memory": api_resource.Quantity(string="1Gi"),
+                    "nvidia.com/gpu": api_resource.Quantity(string="1"),
+                },
+            ),
+        )
+    ],
+)
+
+fake_podspec_small = core_v1.PodSpec(
+    containers=[
+        core_v1.Container(
+            name="JupyterLab",
+            image="jupyter/tensorflow-notebook:latest",
+            securityContext=core_v1.SecurityContext(runAsUser=1000),
+            resources=core_v1.ResourceRequirements(
+                requests={
+                    "cpu": api_resource.Quantity(string="1"),
+                    "memory": api_resource.Quantity(string="1Gi"),
+                },
+                limits={
+                    "cpu": api_resource.Quantity(string="1"),
+                    "memory": api_resource.Quantity(string="1Gi"),
+                },
+            ),
+        )
+    ],
+)
+
+
+@pytest.mark.parametrize(
+    "file, fake_podspec",
+    [
+        ("tests/files/test_sub_full.yml", fake_podspec_full),
+        ("tests/files/test_sub_small_req.yml", fake_podspec_small),
+    ],
+)
+def test_podspec_conversion(file, fake_podspec):
+    """
+    Test if PodSpec was created correcty
+    """
+
+    configs = get_submissions(file)
+    test_podspec = configs[0].to_podspec()
+
+    assert str(test_podspec) == str(
+        fake_podspec
+    ), f"{test_podspec} \n\n {fake_podspec} \n\n"
