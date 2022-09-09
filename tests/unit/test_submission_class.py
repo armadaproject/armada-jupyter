@@ -19,8 +19,8 @@ fake_submission_full = Submission(
     armada_priority=1,
     timeout="36h",
     resources=K8sResources(
-        limits=K8sResourceOptions(cpu=1, memory="1Gi", nvidia_gpu=1, amd_gpu=2),
-        requests=K8sResourceOptions(cpu=1, memory="1Gi", nvidia_gpu=1, amd_gpu=2),
+        limits=K8sResourceOptions(cpu=1, memory="1Gi", nvidia_gpu=1),
+        requests=K8sResourceOptions(cpu=1, memory="1Gi", nvidia_gpu=1),
     ),
 )
 
@@ -40,6 +40,7 @@ fake_submission_small_req = Submission(
     timeout="36h",
     resources=K8sResources(
         limits=K8sResourceOptions(cpu=1, memory="1Gi"),
+        requests=K8sResourceOptions(cpu=1, memory="1Gi"),
     ),
 )
 

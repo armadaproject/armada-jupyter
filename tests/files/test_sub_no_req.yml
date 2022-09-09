@@ -7,5 +7,5 @@ submissions:
   armada_queue: "default"
   armada_priority: 1
 
-  # We Support "h" and "mins" for time
+  # We Support "h" and "m" for hours and minutes
   timeout: 36h

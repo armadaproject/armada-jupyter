@@ -7,7 +7,7 @@ submissions:
   armada_queue: "default"
   armada_priority: 1
 
-  # We Support "h" and "mins" for time
+  # We Support "h" and "m" for hours and minutes
   timeout: 36h
 
   # Resources are based on the Kubernetes resource model
@@ -18,7 +18,6 @@ submissions:
 
       # for gpu, we support "nvidia.com/gpu" and "amd.com/gpu"
       nvidia.com/gpu: 1
-      amd.com/gpu: 2
 
     requests:
       cpu: 1
@@ -26,4 +25,3 @@ submissions:
 
       # for gpu, we support "nvidia.com/gpu" and "amd.com/gpu"
       nvidia.com/gpu: 1
-      amd.com/gpu: 2

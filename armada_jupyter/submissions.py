@@ -29,6 +29,11 @@ class K8sResourceOptions:
         self.nvidia_gpu = nvidia_gpu
         self.amd_gpu = amd_gpu
 
+        if self.nvidia_gpu and self.amd_gpu:
+            raise ValueError(
+                "Both nvidia_gpu and amd_gpu cannot be set at the same time."
+            )
+
         # If they exist, they might be a string, so we need to convert them to int
         if self.nvidia_gpu:
             self.nvidia_gpu = int(self.nvidia_gpu)
@@ -51,8 +56,8 @@ class K8sResources:
     def __init__(
         self, limits: K8sResourceOptions = None, requests: K8sResourceOptions = None
     ):
-        if limits is None and requests is None:
-            raise ValueError("Must specify at least one of limits or requests")
+        if limits is None or requests is None:
+            raise ValueError("Must specify both limits and requests")
 
         self.limits = limits
         self.requests = limits
@@ -105,8 +110,7 @@ class Submission:
         elif timeout[-1] == "s":
             return timeout
 
-        ValueError("Timeout must be in the form of [x]h, [x]m or [x]s")
-        return None
+        raise ValueError("Timeout must be in the form of [x]h, [x]m or [x]s")
 
     def resources_from_dict(
         self, resources: Dict[str, Dict[str, Union[str, int]]]

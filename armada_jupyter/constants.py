@@ -1,4 +1,8 @@
 class YMLSTR:
+    """
+    This class is used to store the yml strings for the different
+    services that are used in the armada-jupyter config.
+    """
 
     submissions = "submissions"
 

@@ -11,13 +11,11 @@ from armada_jupyter.submissions import (
     "limits, requests, expected",
     [
         (
-            {"cpu": 1, "memory": "1Gi", "nvidia.com/gpu": 1, "amd.com/gpu": 2},
-            {"cpu": 1, "memory": "1Gi", "nvidia.com/gpu": 1, "amd.com/gpu": 2},
+            {"cpu": 1, "memory": "1Gi", "nvidia.com/gpu": 1},
+            {"cpu": 1, "memory": "1Gi", "nvidia.com/gpu": 1},
             K8sResources(
-                limits=K8sResourceOptions(cpu=1, memory="1Gi", nvidia_gpu=1, amd_gpu=2),
-                requests=K8sResourceOptions(
-                    cpu=1, memory="1Gi", nvidia_gpu=1, amd_gpu=2
-                ),
+                limits=K8sResourceOptions(cpu=1, memory="1Gi", nvidia_gpu=1),
+                requests=K8sResourceOptions(cpu=1, memory="1Gi", nvidia_gpu=1),
             ),
         ),
         (
