@@ -18,7 +18,7 @@ from armada_jupyter.submissions import (
 
 
 fake_submission_full = Submission(
-    name="JupyterLab",
+    name="jupyterlab",
     image="jupyter/tensorflow-notebook:latest",
     armada_queue="default",
     armada_priority=1,
@@ -30,7 +30,7 @@ fake_submission_full = Submission(
 )
 
 fake_submission_no_req = Submission(
-    name="JupyterLab",
+    name="jupyterlab",
     image="jupyter/tensorflow-notebook:latest",
     armada_queue="default",
     armada_priority=1,
@@ -38,7 +38,7 @@ fake_submission_no_req = Submission(
 )
 
 fake_submission_small_req = Submission(
-    name="JupyterLab",
+    name="jupyterlab",
     image="jupyter/tensorflow-notebook:latest",
     armada_queue="default",
     armada_priority=1,
@@ -50,7 +50,7 @@ fake_submission_small_req = Submission(
 )
 
 fake_submission_small = Submission(
-    name="JupyterLab",
+    name="jupyterlab",
     image="jupyter/tensorflow-notebook:latest",
     armada_queue="default",
     armada_priority=1,
@@ -101,8 +101,9 @@ def test_submission_timeout(file, real_timeout):
 fake_podspec_full = core_v1.PodSpec(
     containers=[
         core_v1.Container(
-            name="JupyterLab",
+            name="jupyterlab",
             image="jupyter/tensorflow-notebook:latest",
+            ports=[core_v1.ContainerPort(containerPort=8888)],
             securityContext=core_v1.SecurityContext(runAsUser=1000),
             resources=core_v1.ResourceRequirements(
                 requests={
@@ -123,9 +124,10 @@ fake_podspec_full = core_v1.PodSpec(
 fake_podspec_small = core_v1.PodSpec(
     containers=[
         core_v1.Container(
-            name="JupyterLab",
+            name="jupyterlab",
             image="jupyter/tensorflow-notebook:latest",
             securityContext=core_v1.SecurityContext(runAsUser=1000),
+            ports=[core_v1.ContainerPort(containerPort=8888)],
             resources=core_v1.ResourceRequirements(
                 requests={
                     "cpu": api_resource.Quantity(string="1"),

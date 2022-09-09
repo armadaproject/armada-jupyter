@@ -34,3 +34,5 @@ DEFAULT_CPU = 1
 DISABLE_SSL = os.environ.get("DISABLE_SSL", False)
 HOST = os.environ.get("ARMADA_SERVER", "localhost")
 PORT = os.environ.get("ARMADA_PORT", "50051")
+
+JOB_SET_ID = "armada-jupyter-pods"

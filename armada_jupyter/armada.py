@@ -7,7 +7,7 @@ import grpc
 from armada_client.client import ArmadaClient
 from armada_client.armada import submit_pb2
 
-from armada_jupyter.constants import HOST, PORT, DISABLE_SSL
+from armada_jupyter.constants import HOST, PORT, DISABLE_SSL, JOB_SET_ID
 
 
 def create_jupyter_service():
@@ -60,10 +60,10 @@ def submit(submission):
     client = ArmadaClient(channel)
 
     queue = submission.armada_queue
-    job_set_id = "armada-jupyter-pods"
 
     # Create the PodSpec for the job
     job_request_item = create_armada_request(submission, client)
-    client.submit_jobs(
-        queue=queue, job_set_id=job_set_id, job_request_items=[job_request_item]
+    resp = client.submit_jobs(
+        queue=queue, job_set_id=JOB_SET_ID, job_request_items=[job_request_item]
     )
+    return resp, client

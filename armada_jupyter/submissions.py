@@ -179,6 +179,7 @@ class Submission:
                     name=self.name,
                     image=self.image,
                     securityContext=core_v1.SecurityContext(runAsUser=1000),
+                    ports=[core_v1.ContainerPort(containerPort=8888)],
                     resources=core_v1.ResourceRequirements(
                         requests=requests, limits=limits
                     ),

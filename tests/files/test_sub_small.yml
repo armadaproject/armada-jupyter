@@ -1,5 +1,5 @@
 version: "0.1"
 
 submissions:
-- name: "JupyterLab"
+- name: "jupyterlab"
   image: "jupyter/tensorflow-notebook:latest"

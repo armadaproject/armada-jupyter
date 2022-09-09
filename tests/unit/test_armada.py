@@ -24,7 +24,7 @@ labels = {"app": "jupyter"}
 
 
 fake_submission_small = Submission(
-    name="JupyterLab",
+    name="jupyterlab",
     image="jupyter/tensorflow-notebook:latest",
     armada_queue="default",
     armada_priority=1,
@@ -34,9 +34,10 @@ fake_submission_small = Submission(
 fake_podspec_small = core_v1.PodSpec(
     containers=[
         core_v1.Container(
-            name="JupyterLab",
+            name="jupyterlab",
             image="jupyter/tensorflow-notebook:latest",
             securityContext=core_v1.SecurityContext(runAsUser=1000),
+            ports=[core_v1.ContainerPort(containerPort=8888)],
             resources={},
         )
     ],
