@@ -1,3 +1,6 @@
+import os
+
+
 class YMLSTR:
     """
     This class is used to store the yml strings for the different
@@ -27,3 +30,7 @@ DEFAULT_TIMEOUT = "1h"
 
 DEFAULT_MEMORY = "1Gi"
 DEFAULT_CPU = 1
+
+DISABLE_SSL = os.environ.get("DISABLE_SSL", False)
+HOST = os.environ.get("ARMADA_SERVER", "localhost")
+PORT = os.environ.get("ARMADA_PORT", "50051")
