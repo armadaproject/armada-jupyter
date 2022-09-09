@@ -1,0 +1,5 @@
+version: "0.1"
+
+submissions:
+- name: "JupyterLab"
+  image: "jupyter/tensorflow-notebook:latest"

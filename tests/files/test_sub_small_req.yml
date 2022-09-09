@@ -1,0 +1,17 @@
+version: "0.1"
+
+submissions:
+- name: "JupyterLab"
+  image: "jupyter/tensorflow-notebook:latest"
+
+  armada_queue: "default"
+  armada_priority: 1
+
+  # We Support "h" and "mins" for time
+  timeout: 36h
+
+  # Resources are based on the Kubernetes resource model
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
