@@ -35,7 +35,7 @@ def create_armada_request(submission, client):
     # Create the PodSpec for the job
     return client.create_job_request_item(
         priority=priority,
-        pod_spec=submission.to_pod_spec(),
+        pod_spec=submission.to_podspec(),
         ingress=[create_jupyter_ingress()],
         services=[create_jupyter_service()],
         labels={"app": "jupyter"},
