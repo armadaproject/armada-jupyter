@@ -48,8 +48,10 @@ class K8sResourceOptions:
 
     def __repr__(self) -> str:
         return (
-            f"K8sResourceOptions({YMLSTR.cpu}={self.cpu}, {YMLSTR.memory}='{self.memory}', "
-            f"{YMLSTR.nvidia_gpu}={self.nvidia_gpu}, {YMLSTR.amd_gpu}={self.amd_gpu})"
+            f"K8sResourceOptions({YMLSTR.cpu}={self.cpu}, "
+            f"{YMLSTR.memory}='{self.memory}', "
+            f"{YMLSTR.nvidia_gpu}={self.nvidia_gpu}, "
+            f"{YMLSTR.amd_gpu}={self.amd_gpu})"
         )
 
 
@@ -68,7 +70,10 @@ class K8sResources:
         self.requests = limits
 
     def __repr__(self) -> str:
-        return f"K8sResources({YMLSTR.limits}={self.limits}, {YMLSTR.requests}={self.requests})"
+        return (
+            f"K8sResources({YMLSTR.limits}={self.limits}, "
+            f"{YMLSTR.requests}={self.requests})"
+        )
 
 
 class Submission:
