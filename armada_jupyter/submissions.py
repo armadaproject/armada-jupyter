@@ -23,7 +23,7 @@ class Job:
         self.ingress = ingress
         self.services = services
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"Jobs({self.podspec}, {self.priority}, {self.namespace}, "
             f"{self.ingress}, {self.services})"
@@ -67,7 +67,7 @@ class Submission:
         )
 
 
-def convert_to_object(file):
+def convert_to_object(file: str) -> Submission:
     """
     Converts a yaml file into a Submission object
     """
@@ -117,7 +117,7 @@ def convert_to_object(file):
     return Submission(data["queue"], data["jobSetId"], data["timeout"], jobs)
 
 
-def get_podspec(data):
+def get_podspec(data: dict) -> PodSpec:
     # extract podSpec from data
     podSpec = data["jobs"][0]["podSpec"]
 

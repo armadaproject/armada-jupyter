@@ -1,3 +1,5 @@
+import pytest
+
 from armada_client.armada.submit_pb2 import IngressConfig, ServiceConfig, ServiceType
 from armada_client.k8s.io.api.core.v1 import generated_pb2 as core_v1
 from armada_client.k8s.io.apimachinery.pkg.api.resource import (
@@ -32,7 +34,7 @@ fake_ingress = IngressConfig(ports=[8888], tls_enabled=False)
 fake_service = ServiceConfig(type=ServiceType.NodePort, ports=[8888])
 
 
-fake_submission = Submission(
+fake_submission_general = Submission(
     queue="default",
     job_set_id="job-set-1",
     timeout="100s",
@@ -48,9 +50,16 @@ fake_submission = Submission(
 )
 
 
-def test_submission_creation():
-    file = "./tests/files/main.yml"
-
+@pytest.mark.parametrize(
+    "file,fake_submission",
+    [
+        (
+            "tests/files/general.yml",
+            fake_submission_general,
+        )
+    ],
+)
+def test_submission_creation(file, fake_submission):
     submission = convert_to_object(file)
 
     assert submission.queue == fake_submission.queue

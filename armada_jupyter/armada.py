@@ -7,20 +7,18 @@ from armada_client.client import ArmadaClient
 
 from armada_jupyter.constants import HOST, PORT, DISABLE_SSL
 
-from armada_jupyter.submissions import (
-    Submission,
-)
+from armada_jupyter.submissions import Submission, Job
 
 
-def create_armada_request(job, client: ArmadaClient):
+def create_armada_request(job: Job, client: ArmadaClient):
 
     # Create the PodSpec for the job
     return client.create_job_request_item(
         priority=job.priority,
-        pod_spec=job.pod_spec,
+        pod_spec=job.podspec,
         namespace=job.namespace,
-        ingress=[job.ingress],
-        services=[job.service],
+        ingress=job.ingress,
+        services=job.services,
     )
 
 
