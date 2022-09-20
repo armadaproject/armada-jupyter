@@ -34,3 +34,11 @@ DEFAULT_CPU = 1
 DISABLE_SSL = os.environ.get("DISABLE_SSL", False)
 HOST = os.environ.get("ARMADA_SERVER", "localhost")
 PORT = os.environ.get("ARMADA_PORT", "50051")
+
+PODSPEC_BASE = """
+apiVersion: v1
+kind: Pod
+metadata:
+  name: placeholder
+spec: "placeholder"
+"""

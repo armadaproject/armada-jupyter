@@ -1,78 +1,32 @@
-from typing import List, Optional, Dict, Union
+from typing import List, Optional
 
 import yaml
+from armada_client.armada.submit_pb2 import IngressConfig, ServiceConfig
+from hikaru import load_full_yaml
+from hikaru.model.rel_1_16 import PodSpec
 
-from armada_client.k8s.io.api.core.v1 import generated_pb2 as core_v1
-from armada_client.k8s.io.apimachinery.pkg.api.resource import (
-    generated_pb2 as api_resource,
-)
-
-from armada_jupyter.constants import (
-    YMLSTR,
-    DEFAULT_QUEUE,
-    DEFAULT_PRIORITY,
-    DEFAULT_TIMEOUT,
-    DEFAULT_MEMORY,
-    DEFAULT_CPU,
-)
+from armada_jupyter.constants import PODSPEC_BASE
 
 
-class K8sResourceOptions:
-    """
-    Manages the options for a kubernetes resource request or limit
-    """
-
+class Job:
     def __init__(
         self,
-        cpu: int,
-        memory: str,
-        nvidia_gpu: Union[str, int, None] = None,
-        amd_gpu: Union[str, int, None] = None,
+        podspec: PodSpec,
+        priority: int = None,
+        namespace: str = None,
+        ingress: List[IngressConfig] = None,
+        services: List[ServiceConfig] = None,
     ):
-        self.cpu = api_resource.Quantity(string=str(cpu))
-        self.memory = api_resource.Quantity(string=memory)
-        self.nvidia_gpu = nvidia_gpu
-        self.amd_gpu = amd_gpu
+        self.podspec = podspec
+        self.priority = priority
+        self.namespace = namespace
+        self.ingress = ingress
+        self.services = services
 
-        if self.nvidia_gpu and self.amd_gpu:
-            raise ValueError(
-                "Both nvidia_gpu and amd_gpu cannot be set at the same time."
-            )
-
-        # If they exist, they might be a string, so we need to convert them to int
-        if self.nvidia_gpu:
-            self.nvidia_gpu = api_resource.Quantity(string=str(nvidia_gpu))
-
-        if self.amd_gpu:
-            self.amd_gpu = api_resource.Quantity(string=str(amd_gpu))
-
-    def __repr__(self) -> str:
+    def __repr__(self):
         return (
-            f"K8sResourceOptions({YMLSTR.cpu}={self.cpu}, "
-            f"{YMLSTR.memory}='{self.memory}', "
-            f"{YMLSTR.nvidia_gpu}={self.nvidia_gpu}, "
-            f"{YMLSTR.amd_gpu}={self.amd_gpu})"
-        )
-
-
-class K8sResources:
-    """
-    Manages the resources for a Kubernetes pod ran by Armada
-    """
-
-    def __init__(
-        self, limits: K8sResourceOptions = None, requests: K8sResourceOptions = None
-    ):
-        if limits is None or requests is None:
-            raise ValueError("Must specify both limits and requests")
-
-        self.limits = limits
-        self.requests = limits
-
-    def __repr__(self) -> str:
-        return (
-            f"K8sResources({YMLSTR.limits}={self.limits}, "
-            f"{YMLSTR.requests}={self.requests})"
+            f"Jobs({self.podspec}, {self.priority}, {self.namespace}, "
+            f"{self.ingress}, {self.services})"
         )
 
 
@@ -81,27 +35,11 @@ class Submission:
     Represents a Armada-Jupyter Submission
     """
 
-    def __init__(
-        self,
-        name: str,
-        image: str,
-        armada_queue: str,
-        armada_priority: int,
-        timeout: str,
-        resources: Optional[K8sResources] = None,
-    ):
-        self.name = name
-        self.image = image
-        self.armada_queue = armada_queue
-        self.armada_priority = armada_priority
+    def __init__(self, queue: str, job_set_id: str, timeout: str, jobs: List[Job]):
+        self.queue = queue
+        self.job_set_id = job_set_id
         self.timeout = self.timeout_conversion(timeout)
-        self.resources = resources
-
-        # Check that resources is the right object
-        if not isinstance(resources, K8sResources) and resources is not None:
-            raise ValueError(
-                f"resources must be a K8sResources object, not {type(resources)}"
-            )
+        self.jobs = jobs
 
     @staticmethod
     def timeout_conversion(timeout: str) -> Optional[str]:
@@ -122,142 +60,73 @@ class Submission:
 
         raise ValueError("Timeout must be in the form of [x]h, [x]m or [x]s")
 
-    def resources_from_dict(
-        self, resources: Dict[str, Dict[str, Union[str, int]]]
-    ) -> None:
-        """
-        Used for adding a resources from dict
-        """
-
-        self.resources = k8s_resources_from_dict(
-            limits=resources.get(YMLSTR.limits),
-            requests=resources.get(YMLSTR.requests),
-        )
-
     def __repr__(self) -> str:
         return (
-            f"Submission(f{YMLSTR.name}='{self.name}', {YMLSTR.image}='{self.image}' "
-            f"{YMLSTR.armada_queue}='{self.armada_queue}', "
-            f"{YMLSTR.armada_priority}={self.armada_priority}, "
-            f"{YMLSTR.timeout}='{self.timeout}', {YMLSTR.resources}={self.resources})"
+            f"Submission(queue={self.queue}, job_set_id={self.job_set_id}, "
+            f"timeout={self.timeout}, jobs={self.jobs})"
         )
 
-    def to_podspec(self) -> core_v1.PodSpec:
-        """
-        Converts a Submission to a kubernetes PodSpec
-        """
 
-        requests = {}
-        limits = {}
+def convert_to_object(file):
+    """
+    Converts a yaml file into a Submission object
+    """
 
-        if self.resources:
-            requests = {
-                YMLSTR.cpu: self.resources.requests.cpu,
-                YMLSTR.memory: self.resources.requests.memory,
-            }
+    with open(file, "r", encoding="utf-8") as stream:
+        data = yaml.safe_load(stream)
 
-            limits = {
-                YMLSTR.cpu: self.resources.limits.cpu,
-                YMLSTR.memory: self.resources.limits.memory,
-            }
+    jobs = []
 
-            if self.resources.requests.nvidia_gpu:
-                requests[YMLSTR.nvidia_gpu] = self.resources.requests.nvidia_gpu
+    for job in data["jobs"]:
+        podspec = job.get("podSpec")
+        priority = job.get("priority")
+        namespace = job.get("namespace")
+        ingress = job.get("ingress")
+        services = job.get("services")
 
-            if self.resources.requests.amd_gpu:
-                requests[YMLSTR.amd_gpu] = self.resources.requests.amd_gpu
+        podspec = get_podspec(data)
 
-            if self.resources.limits.nvidia_gpu:
-                limits[YMLSTR.nvidia_gpu] = self.resources.limits.nvidia_gpu
+        ingress_configs = []
 
-            if self.resources.limits.amd_gpu:
-                limits[YMLSTR.amd_gpu] = self.resources.limits.amd_gpu
-
-        return core_v1.PodSpec(
-            containers=[
-                core_v1.Container(
-                    name=self.name,
-                    image=self.image,
-                    securityContext=core_v1.SecurityContext(runAsUser=1000),
-                    resources=core_v1.ResourceRequirements(
-                        requests=requests, limits=limits
-                    ),
+        if ingress is not None:
+            for i in ingress:
+                ingress_configs.append(
+                    IngressConfig(
+                        type=i.get("type"),
+                        ports=i.get("ports"),
+                        annotations=i.get("annotations"),
+                        tls_enabled=i.get("tlsEnabled"),
+                        cert_name=i.get("certName"),
+                        use_clusterIP=i.get("useClusterIP"),
+                    )
                 )
-            ]
-        )
+
+        service_configs = []
+
+        if services is not None:
+            for s in services:
+                service_configs.append(
+                    ServiceConfig(
+                        type=s.get("type"),
+                        ports=s.get("ports"),
+                    )
+                )
+
+        jobs.append(Job(podspec, priority, namespace, ingress_configs, service_configs))
+
+    return Submission(data["queue"], data["jobSetId"], data["timeout"], jobs)
 
 
-def k8s_resources_from_dict(
-    limits: Optional[Dict[str, Union[str, int]]] = None,
-    requests: Optional[Dict[str, Union[str, int]]] = None,
-) -> K8sResources:
-    """
-    Creates a K8sResources object from a dict
-    """
+def get_podspec(data):
+    # extract podSpec from data
+    podSpec = data["jobs"][0]["podSpec"]
 
-    changed: Dict[str, Optional[K8sResourceOptions]] = {}
+    # open base
+    base = yaml.safe_load(PODSPEC_BASE)
 
-    if limits is None or requests is None:
-        raise ValueError("Must specify both limits and requests")
+    # append podSpec to base
+    base["spec"] = podSpec
 
-    # Use a loop to save repeated code.
-    for key, needs_changed in [(YMLSTR.limits, limits), (YMLSTR.requests, requests)]:
-        if needs_changed is None:
-            changed[key] = None
-            continue
+    docs = load_full_yaml(yaml=yaml.dump(base))
 
-        # We use .get() here because we don't want to raise an error if the key
-        # doesn't exist.
-        changed[key] = K8sResourceOptions(
-            cpu=int(needs_changed.get(YMLSTR.cpu, DEFAULT_CPU)),
-            memory=str(needs_changed.get(YMLSTR.memory, DEFAULT_MEMORY)),
-            nvidia_gpu=needs_changed.get(YMLSTR.nvidia_gpu, None),
-            amd_gpu=needs_changed.get(YMLSTR.amd_gpu, None),
-        )
-
-    return K8sResources(
-        limits=changed[YMLSTR.limits],
-        requests=changed[YMLSTR.requests],
-    )
-
-
-def get_submissions(file) -> List[Submission]:
-    """
-    Creates the submissions from a YAML file
-    """
-
-    submissions = []
-
-    with open(file, "r", encoding="utf-8") as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
-
-        for submission in config[YMLSTR.submissions]:
-
-            # pop out resources key
-            resources = submission.pop(YMLSTR.resources, None)
-
-            # check for missing mandatory keys
-            for key in [YMLSTR.name, YMLSTR.image]:
-                if key not in submission:
-                    raise ValueError(f"Missing mandatory key {key}")
-
-            # create submission object
-            # We use .get() for the optional keys so that we don't raise an error
-            submission = Submission(
-                name=submission[YMLSTR.name],
-                image=submission[YMLSTR.image],
-                armada_queue=submission.get(YMLSTR.armada_queue, DEFAULT_QUEUE),
-                armada_priority=submission.get(
-                    YMLSTR.armada_priority, DEFAULT_PRIORITY
-                ),
-                timeout=submission.get(YMLSTR.timeout, DEFAULT_TIMEOUT),
-            )
-
-            # Insert resources seperately. This is because we need want to
-            # support both a dict and a K8sResources object.
-            if resources:
-                submission.resources_from_dict(resources)
-
-            submissions.append(submission)
-
-    return submissions
+    return docs[0].spec
