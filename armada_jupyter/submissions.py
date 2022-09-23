@@ -2,16 +2,12 @@ from typing import List, Optional
 
 import yaml
 from armada_client.armada.submit_pb2 import IngressConfig, ServiceConfig
-from hikaru import load_full_yaml
-from hikaru.model.rel_1_16 import PodSpec
-
-from armada_jupyter.constants import PODSPEC_BASE
 
 
 class Job:
     def __init__(
         self,
-        podspec: PodSpec,
+        podspec,
         priority: int = None,
         namespace: str = None,
         ingress: List[IngressConfig] = None,
@@ -115,18 +111,3 @@ def convert_to_object(file: str) -> Submission:
         jobs.append(Job(podspec, priority, namespace, ingress_configs, service_configs))
 
     return Submission(data["queue"], data["jobSetId"], data["timeout"], jobs)
-
-
-def get_podspec(data: dict) -> PodSpec:
-    # extract podSpec from data
-    podSpec = data["jobs"][0]["podSpec"]
-
-    # open base
-    base = yaml.safe_load(PODSPEC_BASE)
-
-    # append podSpec to base
-    base["spec"] = podSpec
-
-    docs = load_full_yaml(yaml=yaml.dump(base))
-
-    return docs[0].spec
