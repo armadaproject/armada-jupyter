@@ -10,10 +10,10 @@ class Job:
     def __init__(
         self,
         podspec,
-        priority: int = None,
-        namespace: str = None,
-        ingress: List[IngressConfig] = None,
-        services: List[ServiceConfig] = None,
+        priority: int,
+        namespace: str,
+        ingress: List[IngressConfig],
+        services: List[ServiceConfig],
     ):
         self.podspec = podspec
         self.priority = priority
