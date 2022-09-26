@@ -66,6 +66,8 @@ fake_job_general = Job(
     namespace="adam",
     ingress=[fake_ingress],
     services=[fake_service],
+    labels={"test": "test"},
+    annotations={"test.com/annotation": "true"},
 )
 
 
@@ -80,3 +82,5 @@ def test_create_armada_request(fake_job):
     assert request.services[0] == fake_job.services[0]
     assert request.priority == fake_job.priority
     assert request.namespace == fake_job.namespace
+    assert request.labels == fake_job.labels
+    assert request.annotations == fake_job.annotations

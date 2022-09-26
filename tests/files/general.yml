@@ -6,6 +6,10 @@ timeout: "100s"
 jobs:
   - priority: 1
     namespace: adam
+    labels:
+      test: test
+    annotations:
+      test.com/annotation: "true"
     ingress:
       - tlsEnabled: false
         ports:

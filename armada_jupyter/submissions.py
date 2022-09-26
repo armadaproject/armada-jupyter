@@ -1,25 +1,29 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 import yaml
 from armada_client.armada.submit_pb2 import IngressConfig, ServiceConfig
-from armada_jupyter.podspec import create_podspec_object
+from armada_jupyter.podspec import create_podspec_object, PodSpec
 from armada_jupyter.constants import YMLSTR
 
 
 class Job:
     def __init__(
         self,
-        podspec,
+        podspec: PodSpec,
         priority: int,
         namespace: str,
         ingress: List[IngressConfig],
         services: List[ServiceConfig],
+        labels: Dict[str, str],
+        annotations: Dict[str, str],
     ):
         self.podspec = podspec
         self.priority = priority
         self.namespace = namespace
         self.ingress = ingress
         self.services = services
+        self.labels = labels
+        self.annotations = annotations
 
     def __repr__(self) -> str:
         return (
@@ -81,6 +85,8 @@ def convert_to_submission(file: str) -> Submission:
         namespace = job.get(YMLSTR.NAMESPACE)
         ingress = job.get(YMLSTR.INGRESS)
         services = job.get(YMLSTR.SERVICES)
+        labels = job.get(YMLSTR.LABELS)
+        annotations = job.get(YMLSTR.ANNOTATIONS)
 
         podspec = create_podspec_object(podspec)
 
@@ -98,7 +104,17 @@ def convert_to_submission(file: str) -> Submission:
             for s_config in services:
                 service_configs.append(ServiceConfig(**s_config))
 
-        jobs.append(Job(podspec, priority, namespace, ingress_configs, service_configs))
+        jobs.append(
+            Job(
+                podspec,
+                priority,
+                namespace,
+                ingress_configs,
+                service_configs,
+                labels,
+                annotations,
+            )
+        )
 
     return Submission(
         data[YMLSTR.QUEUE], data[YMLSTR.JOB_SET_ID], data[YMLSTR.TIMEOUT], jobs

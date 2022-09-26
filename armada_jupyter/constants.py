@@ -14,6 +14,8 @@ class YMLSTR:
     NAMESPACE = "namespace"
     INGRESS = "ingress"
     SERVICES = "services"
+    LABELS = "labels"
+    ANNOTATIONS = "annotations"
 
     QUEUE = "queue"
     JOB_SET_ID = "jobSetId"

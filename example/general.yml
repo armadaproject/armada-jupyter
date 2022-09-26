@@ -6,6 +6,10 @@ timeout: "100s"
 jobs:
   - priority: 1
     namespace: adam
+    labels:
+      app: example
+    annotations:
+      example.com/annotation: "true"
     ingress:
       - tlsEnabled: false
         ports:

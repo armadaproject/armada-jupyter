@@ -45,6 +45,8 @@ fake_submission_general = Submission(
             namespace="adam",
             ingress=[fake_ingress],
             services=[fake_service],
+            labels={"test": "test"},
+            annotations={"test.com/annotation": "true"},
         )
     ],
 )

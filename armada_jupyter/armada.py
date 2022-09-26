@@ -19,6 +19,8 @@ def create_armada_request(job: Job, client: ArmadaClient):
         namespace=job.namespace,
         ingress=job.ingress,
         services=job.services,
+        labels=job.labels,
+        annotations=job.annotations,
     )
 
 
