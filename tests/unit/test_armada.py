@@ -16,17 +16,17 @@ from armada_jupyter.submissions import Job
 @pytest.fixture(scope="session", autouse=True)
 def server_mock():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    server.add_insecure_port("[::]:50051")
+    server.add_insecure_port("[::]:12345")
     server.start()
 
     yield
     server.stop(False)
 
 
-channel = grpc.insecure_channel(target="127.0.0.1:50051")
+channel = grpc.insecure_channel(target="127.0.0.1:12345")
 tester = ArmadaClient(
     grpc.insecure_channel(
-        target="127.0.0.1:50051",
+        target="127.0.0.1:12345",
         options={
             "grpc.keepalive_time_ms": 30000,
         }.items(),
