@@ -5,7 +5,7 @@ from armada_client.k8s.io.api.core.v1 import generated_pb2 as core_v1
 from armada_client.k8s.io.apimachinery.pkg.api.resource import (
     generated_pb2 as api_resource,
 )
-from armada_jupyter.submissions import Job, Submission, convert_to_object
+from armada_jupyter.submissions import Job, Submission, convert_to_submission
 
 fake_podspec_full = core_v1.PodSpec(
     containers=[
@@ -60,7 +60,7 @@ fake_submission_general = Submission(
     ],
 )
 def test_submission_creation(file, fake_submission):
-    submission = convert_to_object(file)
+    submission = convert_to_submission(file)
 
     assert submission.queue == fake_submission.queue
     assert submission.job_set_id == fake_submission.job_set_id
@@ -78,43 +78,45 @@ def test_submission_creation(file, fake_submission):
         == fake_submission.jobs[0].podspec.containers[0].securityContext.runAsUser
     )
     assert (
-        str(submission.jobs[0].podspec.containers[0].resources.requests["cpu"])
+        submission.jobs[0].podspec.containers[0].resources.requests["cpu"].string
         == fake_submission.jobs[0]
         .podspec.containers[0]
         .resources.requests["cpu"]
         .string
     )
     assert (
-        str(submission.jobs[0].podspec.containers[0].resources.requests["memory"])
+        submission.jobs[0].podspec.containers[0].resources.requests["memory"].string
         == fake_submission.jobs[0]
         .podspec.containers[0]
         .resources.requests["memory"]
         .string
     )
     assert (
-        str(
-            submission.jobs[0]
-            .podspec.containers[0]
-            .resources.requests["nvidia.com/gpu"]
-        )
+        submission.jobs[0]
+        .podspec.containers[0]
+        .resources.requests["nvidia.com/gpu"]
+        .string
         == fake_submission.jobs[0]
         .podspec.containers[0]
         .resources.requests["nvidia.com/gpu"]
         .string
     )
     assert (
-        str(submission.jobs[0].podspec.containers[0].resources.limits["cpu"])
+        submission.jobs[0].podspec.containers[0].resources.limits["cpu"].string
         == fake_submission.jobs[0].podspec.containers[0].resources.limits["cpu"].string
     )
     assert (
-        str(submission.jobs[0].podspec.containers[0].resources.limits["memory"])
+        submission.jobs[0].podspec.containers[0].resources.limits["memory"].string
         == fake_submission.jobs[0]
         .podspec.containers[0]
         .resources.limits["memory"]
         .string
     )
     assert (
-        str(submission.jobs[0].podspec.containers[0].resources.limits["nvidia.com/gpu"])
+        submission.jobs[0]
+        .podspec.containers[0]
+        .resources.limits["nvidia.com/gpu"]
+        .string
         == fake_submission.jobs[0]
         .podspec.containers[0]
         .resources.limits["nvidia.com/gpu"]

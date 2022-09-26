@@ -2,6 +2,8 @@ from typing import List, Optional
 
 import yaml
 from armada_client.armada.submit_pb2 import IngressConfig, ServiceConfig
+from armada_jupyter.podspec import create_podspec_object
+from armada_jupyter.constants import YMLSTR
 
 
 class Job:
@@ -63,7 +65,7 @@ class Submission:
         )
 
 
-def convert_to_object(file: str) -> Submission:
+def convert_to_submission(file: str) -> Submission:
     """
     Converts a yaml file into a Submission object
     """
@@ -74,40 +76,30 @@ def convert_to_object(file: str) -> Submission:
     jobs = []
 
     for job in data["jobs"]:
-        podspec = job.get("podSpec")
-        priority = job.get("priority")
-        namespace = job.get("namespace")
-        ingress = job.get("ingress")
-        services = job.get("services")
+        podspec = job.get(YMLSTR.PODSPEC)
+        priority = job.get(YMLSTR.PRIORITY)
+        namespace = job.get(YMLSTR.NAMESPACE)
+        ingress = job.get(YMLSTR.INGRESS)
+        services = job.get(YMLSTR.SERVICES)
 
-        podspec = get_podspec(data)
+        podspec = create_podspec_object(podspec)
 
         ingress_configs = []
 
         if ingress is not None:
-            for i in ingress:
-                ingress_configs.append(
-                    IngressConfig(
-                        type=i.get("type"),
-                        ports=i.get("ports"),
-                        annotations=i.get("annotations"),
-                        tls_enabled=i.get("tlsEnabled"),
-                        cert_name=i.get("certName"),
-                        use_clusterIP=i.get("useClusterIP"),
-                    )
-                )
+            for i_config in ingress:
+                # change key names to match protobuf
+                i_config["tls_enabled"] = i_config.pop("tlsEnabled")
+                ingress_configs.append(IngressConfig(**i_config))
 
         service_configs = []
 
         if services is not None:
-            for s in services:
-                service_configs.append(
-                    ServiceConfig(
-                        type=s.get("type"),
-                        ports=s.get("ports"),
-                    )
-                )
+            for s_config in services:
+                service_configs.append(ServiceConfig(**s_config))
 
         jobs.append(Job(podspec, priority, namespace, ingress_configs, service_configs))
 
-    return Submission(data["queue"], data["jobSetId"], data["timeout"], jobs)
+    return Submission(
+        data[YMLSTR.QUEUE], data[YMLSTR.JOB_SET_ID], data[YMLSTR.TIMEOUT], jobs
+    )

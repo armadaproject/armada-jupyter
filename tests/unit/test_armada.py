@@ -71,7 +71,7 @@ fake_job_general = Job(
 
 @pytest.mark.parametrize(
     "fake_job",
-    [(fake_job_general,)],
+    [fake_job_general],
 )
 def test_create_armada_request(fake_job):
     request = create_armada_request(fake_job, tester)
