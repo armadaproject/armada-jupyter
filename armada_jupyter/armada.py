@@ -2,47 +2,29 @@
 Example of getting jupyter notebook running on a k8s cluster.
 """
 
-
 import grpc
 from armada_client.client import ArmadaClient
-from armada_client.armada import submit_pb2
 
-from armada_jupyter.constants import HOST, PORT, DISABLE_SSL, JOB_SET_ID
+from armada_jupyter.constants import HOST, PORT, DISABLE_SSL
 
-
-def create_jupyter_service():
-    """
-    Create a jupyter service.
-    """
-
-    return submit_pb2.ServiceConfig(
-        ports=[8888],
-        type=submit_pb2.ServiceType.NodePort,
-    )
+from armada_jupyter.submissions import Submission, Job
 
 
-def create_jupyter_ingress():
-    """
-    Create a jupyter ingress.
-    """
-
-    return submit_pb2.IngressConfig(ports=[8888], tls_enabled=False, use_clusterIP=True)
-
-
-def create_armada_request(submission, client):
-    priority = submission.armada_priority
+def create_armada_request(job: Job, client: ArmadaClient):
 
     # Create the PodSpec for the job
     return client.create_job_request_item(
-        priority=priority,
-        pod_spec=submission.to_podspec(),
-        ingress=[create_jupyter_ingress()],
-        services=[create_jupyter_service()],
-        labels={"app": "jupyter"},
+        priority=job.priority,
+        pod_spec=job.podspec,
+        namespace=job.namespace,
+        ingress=job.ingress,
+        services=job.services,
+        labels=job.labels,
+        annotations=job.annotations,
     )
 
 
-def submit(submission):
+def submit(submission: Submission):
     """
     Starts a workflow for jupyter notebook.
     """
@@ -59,11 +41,12 @@ def submit(submission):
 
     client = ArmadaClient(channel)
 
-    queue = submission.armada_queue
+    queue = submission.queue
+    job_set_id = submission.job_set_id
 
     # Create the PodSpec for the job
-    job_request_item = create_armada_request(submission, client)
+    job_request_items = [create_armada_request(job, client) for job in submission.jobs]
     resp = client.submit_jobs(
-        queue=queue, job_set_id=JOB_SET_ID, job_request_items=[job_request_item]
+        queue=queue, job_set_id=job_set_id, job_request_items=job_request_items
     )
     return resp, client

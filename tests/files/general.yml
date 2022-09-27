@@ -7,9 +7,9 @@ jobs:
   - priority: 1
     namespace: adam
     labels:
-      app: example
+      test: test
     annotations:
-      example.com/annotation: "true"
+      test.com/annotation: "true"
     ingress:
       - tlsEnabled: false
         ports:
