@@ -49,4 +49,4 @@ def submit(submission: Submission):
     resp = client.submit_jobs(
         queue=queue, job_set_id=job_set_id, job_request_items=job_request_items
     )
-    return resp, client
+    return resp, client, len(job_request_items)
