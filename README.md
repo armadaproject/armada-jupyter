@@ -37,13 +37,20 @@ nodes:
 # Installing
 
 ```bash
-pip install armada-client
+# Using pyproject.toml
+pip install .
 ```
 
 # Running
 
-```bash
-python3 ./src/start.py
+Set the following environment variables:
 
-python3 ./src/cancel.py
+```bash
+ARMADA_SERVER=localhost
+ARMADA_PORT=50051
+DISABLE_SSL=true
+```
+
+```bash
+python3 -m armada_jupyter ./env/files/no-gpu.yml
 ```

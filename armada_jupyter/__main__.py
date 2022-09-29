@@ -19,6 +19,8 @@ def submit(file: str):
     typer.echo(f"Submitting {no_of_jobs} Jobs to Armada")
 
     job_id = resp.job_response_items[0].job_id
+
+    # NOTE: This is subject to change
     typer.echo(f"URL is: https://armada-{job_id}-0.jupyter.armadaproject.io")
 
     # complete an events loop
