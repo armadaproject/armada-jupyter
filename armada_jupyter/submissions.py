@@ -95,13 +95,15 @@ def convert_to_submission(file: str) -> Submission:
         if ingress is not None:
             for i_config in ingress:
                 # change key names to match protobuf
-                i_config["tls_enabled"] = i_config.pop("tlsEnabled")
+                i_config = match_ingress_protobuf_keys(i_config)
                 ingress_configs.append(IngressConfig(**i_config))
 
         service_configs = []
 
         if services is not None:
             for s_config in services:
+                # change key names to match protobuf
+                s_config = match_service_protobuf_keys(s_config)
                 service_configs.append(ServiceConfig(**s_config))
 
         jobs.append(
@@ -119,3 +121,21 @@ def convert_to_submission(file: str) -> Submission:
     return Submission(
         data[YMLSTR.QUEUE], data[YMLSTR.JOB_SET_ID], data[YMLSTR.TIMEOUT], jobs
     )
+
+
+def match_ingress_protobuf_keys(ingress_config: Dict[str, str]) -> Dict[str, str]:
+    """
+    Change key names to match protobuf
+    """
+
+    ingress_config["tls_enabled"] = ingress_config.pop("tlsEnabled")
+
+    return ingress_config
+
+
+def match_service_protobuf_keys(service_config: Dict[str, str]) -> Dict[str, str]:
+    """
+    Change key names to match protobuf
+    """
+
+    return service_config
