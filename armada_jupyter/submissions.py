@@ -135,7 +135,10 @@ def match_ingress_protobuf_keys(ingress_config: Dict[str, str]) -> Dict[str, str
 
 def match_service_protobuf_keys(service_config: Dict[str, str]) -> Dict[str, str]:
     """
-    Change key names to match protobuf
+    Change key names to match protobuf.
+
+    NOTE: Currently there are no keys to change, but this function is here
+    in case there are in the future.
     """
 
     return service_config
