@@ -27,15 +27,19 @@ def submit(file: str):
         EventType.duplicate_found,
         EventType.failed,
         EventType.cancelled,
+        EventType.succeeded,
     ]
 
     event_stream = client.get_job_events_stream(
         queue=submission.queue, job_set_id=submission.job_set_id
     )
 
-    jobs_finished = 0
+    jobs_submitted = 0
 
-    # Contains all the possible message types
+    # Checks that all the jobs have started.
+    # If any of the terminal events are received,
+    # this means it has failed to start correctly, including
+    # if it "succeeded"
     for event in event_stream:
 
         event = client.unmarshal_event_response(event)
@@ -43,13 +47,13 @@ def submit(file: str):
             if event.type == EventType.running:
                 typer.echo("\nJob is running!")
                 print(event)
-                jobs_finished += 1
+                jobs_submitted += 1
 
             elif event.type in terminal_events:
                 typer.echo(f"Job {job_id} failed to start")
-                jobs_finished += 1
+                jobs_submitted += 1
 
-        if jobs_finished == no_of_jobs:
+        if jobs_submitted == no_of_jobs:
             break
 
     typer.echo("Completed all submissions!")
