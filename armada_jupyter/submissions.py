@@ -99,11 +99,7 @@ def convert_to_submission(file: str) -> Submission:
         if ingress is not None:
             for i_config in ingress:
                 # change key names to match protobuf
-                if "tlsEnabled" in i_config:
-                    i_config["tls_enabled"] = i_config.pop("tlsEnabled")
-
-                if "UseClusterIP" in i_config:
-                    i_config["use_clusterIP"] = i_config.pop("UseClusterIP")
+                remap_ingress_protobuf_keys(i_config)
 
                 ingress_configs.append(IngressConfig(**i_config))
 
@@ -128,3 +124,15 @@ def convert_to_submission(file: str) -> Submission:
     return Submission(
         data[YMLSTR.QUEUE], data[YMLSTR.JOB_SET_ID], data[YMLSTR.TIMEOUT], jobs
     )
+
+
+def remap_ingress_protobuf_keys(config: Dict[str, str]):
+    """
+    Remap keys in ingress config to match protobuf
+    """
+
+    if "tlsEnabled" in config:
+        config["tls_enabled"] = config.pop("tlsEnabled")
+
+    if "UseClusterIP" in config:
+        config["use_clusterIP"] = config.pop("UseClusterIP")

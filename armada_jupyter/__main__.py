@@ -1,9 +1,10 @@
+import time
+
 import typer
 from armada_client.client import ArmadaClient
 
 from armada_jupyter import armada, submissions
 from armada_jupyter.armada import check_job_status, construct_url
-
 
 app = typer.Typer(help="CLI for Armada Jupyter.")
 
@@ -32,6 +33,9 @@ def submit_worker(file: str, armada_client: ArmadaClient):
 
         client, job_id = armada.submit(submission, job, armada_client)
         typer.echo(f"Submitted Job {job_id} to Armada")
+
+        # Sleep to make sure that job-set-id is created
+        time.sleep(3)
 
         err = check_job_status(client, submission, job_id)
 
