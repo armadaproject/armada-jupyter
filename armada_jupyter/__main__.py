@@ -1,7 +1,9 @@
 import typer
-from armada_client.typings import EventType
+from armada_client.client import ArmadaClient
 
 from armada_jupyter import armada, submissions
+from armada_jupyter.armada import check_job_status, construct_url
+
 
 app = typer.Typer(help="CLI for Armada Jupyter.")
 
@@ -11,54 +13,37 @@ def submit(file: str):
     """
     Creates new JupyterLab pods defined in the submission file
     """
+    submit_worker(file, ArmadaClient)
+
+
+def submit_worker(file: str, armada_client: ArmadaClient):
+    """
+    A worker function for submit command.
+
+    This function is separated from submit command to allow for easier testing.
+    """
 
     typer.echo(f"Getting Submission Objects from {file}")
     submission = submissions.convert_to_submission(file)
 
-    resp, client, no_of_jobs = armada.submit(submission)
-    typer.echo(f"Submitting {no_of_jobs} Jobs to Armada")
+    typer.echo(f"Submitting {len(submission.jobs)} Jobs to Armada")
 
-    job_id = resp.job_response_items[0].job_id
+    for job in submission.jobs:
 
-    # NOTE: This is subject to change
-    typer.echo(f"URL is: https://armada-{job_id}-0.jupyter.armadaproject.io")
+        client, job_id = armada.submit(submission, job, armada_client)
+        typer.echo(f"Submitted Job {job_id} to Armada")
 
-    # complete an events loop
+        err = check_job_status(client, submission, job_id)
 
-    terminal_events = [
-        EventType.duplicate_found,
-        EventType.failed,
-        EventType.cancelled,
-        EventType.succeeded,
-    ]
+        if not err:
+            typer.echo(f"Job {job_id} failed to start")
 
-    event_stream = client.get_job_events_stream(
-        queue=submission.queue, job_set_id=submission.job_set_id
-    )
+        else:
+            url = construct_url(job, job_id)
+            typer.echo(f"Job {job_id} started")
+            typer.echo(f"URL: {url}")
 
-    jobs_submitted = 0
-
-    # Checks that all the jobs have started.
-    # If any of the terminal events are received,
-    # this means it has failed to start correctly, including
-    # if it "succeeded"
-    for event in event_stream:
-
-        event = client.unmarshal_event_response(event)
-        if event.message.job_id == job_id:
-            if event.type == EventType.running:
-                typer.echo("\nJob is running!")
-                print(event)
-                jobs_submitted += 1
-
-            elif event.type in terminal_events:
-                typer.echo(f"Job {job_id} failed to start")
-                jobs_submitted += 1
-
-        if jobs_submitted == no_of_jobs:
-            break
-
-    typer.echo("Completed all submissions!")
+    typer.echo("Completed all submissions!\n\n")
 
 
 if __name__ == "__main__":

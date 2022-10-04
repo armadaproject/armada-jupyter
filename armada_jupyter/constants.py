@@ -1,5 +1,7 @@
 import os
 
+from armada_client.event import EventType
+
 
 class YMLSTR:
     """
@@ -27,3 +29,11 @@ HOST = os.environ.get("ARMADA_SERVER", "localhost")
 PORT = os.environ.get("ARMADA_PORT", "50051")
 
 JOB_SET_ID = "armada-jupyter-pods"
+
+
+TERMINAL_EVENTS = [
+    EventType.duplicate_found,
+    EventType.failed,
+    EventType.cancelled,
+    EventType.succeeded,
+]

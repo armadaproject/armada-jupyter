@@ -21,7 +21,7 @@ jobs:
     podSpec:
       restartPolicy: Never
       containers:
-        - name: JupyterLab
+        - name: jupyterlab
           imagePullPolicy: IfNotPresent
           image: jupyter/tensorflow-notebook:latest
           securityContext:

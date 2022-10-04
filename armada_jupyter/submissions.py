@@ -7,6 +7,10 @@ from armada_jupyter.constants import YMLSTR
 
 
 class Job:
+    """
+    Represents a job to be submitted to Armada.
+    """
+
     def __init__(
         self,
         podspec: PodSpec,
@@ -95,7 +99,12 @@ def convert_to_submission(file: str) -> Submission:
         if ingress is not None:
             for i_config in ingress:
                 # change key names to match protobuf
-                i_config["tls_enabled"] = i_config.pop("tlsEnabled")
+                if "tlsEnabled" in i_config:
+                    i_config["tls_enabled"] = i_config.pop("tlsEnabled")
+
+                if "UseClusterIP" in i_config:
+                    i_config["use_clusterIP"] = i_config.pop("UseClusterIP")
+
                 ingress_configs.append(IngressConfig(**i_config))
 
         service_configs = []
