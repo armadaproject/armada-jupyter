@@ -2,10 +2,9 @@ version: "0.1"
 
 queue: default
 jobSetId: job-set-1
-timeout: "100s"
 jobs:
   - priority: 1
-    namespace: adam
+    namespace: jupyter
     labels:
       app: example
     annotations:
@@ -35,3 +34,6 @@ jobs:
               memory: 1Gi
               cpu: 1
               nvidia.com/gpu: 1
+          ports:
+            - containerPort: 8888
+              name: jupyterlab

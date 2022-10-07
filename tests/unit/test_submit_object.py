@@ -37,12 +37,11 @@ fake_service = ServiceConfig(type=ServiceType.NodePort, ports=[8888])
 fake_submission_general = Submission(
     queue="default",
     job_set_id="job-set-1",
-    timeout="100s",
     jobs=[
         Job(
             podspec=fake_podspec_full,
             priority=1,
-            namespace="adam",
+            namespace="jupyter",
             ingress=[fake_ingress],
             services=[fake_service],
             labels={"test": "test"},
@@ -66,7 +65,6 @@ def test_submission_creation(file, fake_submission):
 
     assert submission.queue == fake_submission.queue
     assert submission.job_set_id == fake_submission.job_set_id
-    assert submission.timeout == fake_submission.timeout
     assert (
         submission.jobs[0].podspec.containers[0].name
         == fake_submission.jobs[0].podspec.containers[0].name

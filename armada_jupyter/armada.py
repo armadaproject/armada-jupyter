@@ -56,18 +56,6 @@ def submit(submission: Submission, job: Job, parent_client: ArmadaClient):
     return client, job_id
 
 
-def get_job_object(submission, job_id):
-    """
-    Returns the Job Objects with a matching job_id
-    """
-
-    for job in submission.jobs:
-        if job.job_id == job_id:
-            return job
-
-    return None
-
-
 def construct_url(job, job_id):
     """
     Constructs the URL for the Jupyter Notebook.
