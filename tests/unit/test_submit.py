@@ -3,10 +3,9 @@ Testing the submit function in __main__.py
 """
 
 import os
-import pytest
-
 from unittest.mock import Mock
 
+import pytest
 from armada_client.client import ArmadaClient
 from armada_client.typings import EventType
 from armada_jupyter.__main__ import submit_worker
