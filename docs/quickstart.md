@@ -38,3 +38,11 @@ python3 ./docs/dev/gen_queue.py
 ```bash
 python3 -m armada_jupyter ./example/testing.yml
 ```
+
+## Cancelling all Jobs
+
+**NOTE: This will kill all jobs running on queue `default` and job-set-id `testing`**
+
+```
+python3 ./docs/dev/cancel.py
+```
