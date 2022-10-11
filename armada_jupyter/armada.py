@@ -3,8 +3,10 @@ Example of getting jupyter notebook running on a k8s cluster.
 """
 
 import os
+from typing import Tuple
 
 import grpc
+from armada_client.armada import submit_pb2
 from armada_client.client import ArmadaClient
 from armada_client.typings import EventType
 
@@ -12,7 +14,9 @@ from armada_jupyter.constants import DISABLE_SSL, HOST, PORT, TERMINAL_EVENTS
 from armada_jupyter.submissions import Job, Submission
 
 
-def create_armada_request(job: Job, client: ArmadaClient):
+def create_armada_request(
+    job: Job, client: ArmadaClient
+) -> submit_pb2.JobSubmitRequestItem:
 
     # Create the PodSpec for the job
     return client.create_job_request_item(
@@ -26,7 +30,9 @@ def create_armada_request(job: Job, client: ArmadaClient):
     )
 
 
-def submit(submission: Submission, job: Job, parent_client: ArmadaClient):
+def submit(
+    submission: Submission, job: Job, parent_client: ArmadaClient
+) -> Tuple[ArmadaClient, str]:
     """
     Starts a workflow for jupyter notebook.
     """
@@ -56,7 +62,7 @@ def submit(submission: Submission, job: Job, parent_client: ArmadaClient):
     return client, job_id
 
 
-def construct_url(job, job_id):
+def construct_url(job: Job, job_id: str) -> str:
     """
     Constructs the URL for the Jupyter Notebook.
 
@@ -76,7 +82,7 @@ def construct_url(job, job_id):
     )
 
 
-def check_job_status(client, submission, job_id):
+def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) -> bool:
     """
     Uses the event stream to check the status of the job.
 
@@ -101,3 +107,5 @@ def check_job_status(client, submission, job_id):
 
             elif event.type in TERMINAL_EVENTS:
                 return False
+
+    return False

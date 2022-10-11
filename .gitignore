@@ -1,3 +1,6 @@
+.vscode
+.env
+
 .tox
 armada_jupyter.egg-info
 __pycache__

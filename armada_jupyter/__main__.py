@@ -37,9 +37,9 @@ def submit_worker(file: str, armada_client: ArmadaClient):
         # Sleep to make sure that job-set-id is created
         time.sleep(3)
 
-        err = check_job_status(client, submission, job_id)
+        successful = check_job_status(client, submission, job_id)
 
-        if not err:
+        if not successful:
             typer.echo(f"Job {job_id} failed to start")
 
         else:
