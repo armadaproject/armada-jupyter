@@ -1,4 +1,4 @@
-# Armada Jupyter
+# Armada-Jupyter
 
 Armada Jupyter is a service for deploying JupyterLab K8s Pods onto Armada.
 

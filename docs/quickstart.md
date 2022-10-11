@@ -14,7 +14,15 @@ kubectl create namespace armada
 
 ```bash
 python3 -m pip install --upgrade pip
-python3 -m pip install ".[test,format]"
+python3 -m pip install .
+```
+
+## Set the following environment variables:
+
+```bash
+export ARMADA_SERVER=localhost
+export ARMADA_PORT=50051
+export DISABLE_SSL=true
 ```
 
 ## Create the Required Python Queue
@@ -23,14 +31,6 @@ This script by default will create a queue called `default`
 
 ```bash
 python3 ./docs/dev/gen_queue.py
-```
-
-## Set the following environment variables:
-
-```bash
-ARMADA_SERVER=localhost
-ARMADA_PORT=50051
-DISABLE_SSL=true
 ```
 
 ## Run the Armada Client
