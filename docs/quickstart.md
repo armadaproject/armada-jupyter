@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 
-Please make sure you have setup the kind cluster correctly. The guide can be found [here](./kind.md).
+If you are using kind you will need to follow the [kind](./docs/kind.md) guide to setup your cluster.
 
 ## Set up the jupyter cluster namespace
 

@@ -1,6 +1,8 @@
 # Kind Setup
 
-This document describes how to setup a local Kubernetes cluster using [kind](https://kind.sigs.k8s.io/docs/user/quick-start/)
+This document describes how to setup a local Kubernetes cluster using [kind](https://kind.sigs.k8s.io/docs/user/quick-start/).
+
+It uses `demo-a` as the name, which follows the convention of [Armadas Dev Setup](https://github.com/G-Research/armada/blob/master/docs/dev/setup_local_host.sh)
 
 ## Prerequisites
 

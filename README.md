@@ -17,6 +17,12 @@ kubernetes:
 
 Then make sure that `*.jupyter.domain.com` resolves to your k8s cluster.
 
+## Cluster Preparation
+
+Armada-Jupyter will need a cluster setup with ingress. If you are using kind, you will need to do this differently.
+
+Please follow the [kind](./docs/kind.md) guide to setup your cluster.
+
 ## Installation
 
 Please following the following guide:
