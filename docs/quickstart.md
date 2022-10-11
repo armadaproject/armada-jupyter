@@ -39,6 +39,12 @@ python3 ./docs/dev/gen_queue.py
 python3 -m armada_jupyter ./example/testing.yml
 ```
 
+This will show the URL's that you can use to access the JupyterLab instance.
+
+**NOTE: The Token is hardcoded as `testing`**
+
+To change the token, change the value in the `/example/testing.yml` file.
+
 ## Cancelling all Jobs
 
 **NOTE: This will kill all jobs running on queue `default` and job-set-id `testing`**
