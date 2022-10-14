@@ -3,14 +3,12 @@ Example of getting jupyter notebook running on a k8s cluster.
 """
 
 import os
-from typing import Tuple
 
-import grpc
 from armada_client.armada import submit_pb2
 from armada_client.client import ArmadaClient
 from armada_client.typings import EventType
 
-from armada_jupyter.constants import DISABLE_SSL, HOST, PORT, TERMINAL_EVENTS
+from armada_jupyter.constants import TERMINAL_EVENTS
 from armada_jupyter.submissions import Job, Submission
 
 
@@ -30,24 +28,10 @@ def create_armada_request(
     )
 
 
-def submit(
-    submission: Submission, job: Job, parent_client: ArmadaClient
-) -> Tuple[ArmadaClient, str]:
+def submit(submission: Submission, job: Job, client: ArmadaClient) -> str:
     """
     Starts a workflow for jupyter notebook.
     """
-
-    # Ensures that the correct channel type is generated
-    if DISABLE_SSL:
-        channel = grpc.insecure_channel(f"{HOST}:{PORT}")
-    else:
-        channel_credentials = grpc.ssl_channel_credentials()
-        channel = grpc.secure_channel(
-            f"{HOST}:{PORT}",
-            channel_credentials,
-        )
-
-    client = parent_client(channel)
 
     queue = submission.queue
     job_set_id = submission.job_set_id
@@ -59,7 +43,7 @@ def submit(
     )
 
     job_id = resp.job_response_items[0].job_id
-    return client, job_id
+    return job_id
 
 
 def construct_url(job: Job, job_id: str) -> str:

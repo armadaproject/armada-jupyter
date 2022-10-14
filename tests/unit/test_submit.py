@@ -5,6 +5,7 @@ Testing the submit function in __main__.py
 import os
 from unittest.mock import Mock
 
+import grpc
 import pytest
 from armada_client.client import ArmadaClient
 from armada_client.typings import EventType
@@ -56,6 +57,10 @@ def test_submit(fake_client, test_file, capsys):
     """
     Test the submit function
     """
+
+    channel = grpc.insecure_channel("")
+
+    fake_client = fake_client(channel)
 
     submit_worker(test_file, fake_client)
 
