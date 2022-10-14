@@ -4,7 +4,7 @@ Armada Jupyter is a service for submitting JupyterLab Jobs onto Armada.
 
 ## Prerequisites
 
-Please make sure you have [Armada](https://github.com/G-Research/armada) installed and running.
+Please make sure you have [Armada](https://github.com/G-Research/armada) running.
 
 Ensure that the executor setting has been changed:
 
