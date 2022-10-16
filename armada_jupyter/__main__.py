@@ -32,6 +32,16 @@ def submit(file: str):
     submit_worker(file, armada_client)
 
 
+@app.command()
+def cancel(url: str):
+    """
+    Accepts a URL and cancels the corresponding job
+    """
+
+    job_id = armada.cancel(url, armada_client)
+    typer.echo(f"\nCancelled job at {url} with Job ID {job_id}")
+
+
 def submit_worker(file: str, client: ArmadaClient):
     """
     A worker function for submit command.

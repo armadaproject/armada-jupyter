@@ -93,3 +93,14 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
                 return False
 
     return False
+
+
+def cancel(url: str, client: ArmadaClient) -> str:
+    """
+    Cancels the job associated with the URL.
+    """
+
+    job_id = url.split("-")[-2]
+    client.cancel_jobs(job_id)
+
+    return job_id
