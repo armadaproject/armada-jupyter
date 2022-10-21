@@ -4,7 +4,7 @@ queue: default
 jobSetId: testing
 jobs:
   - priority: 1
-    namespace: jupyter
+    namespace: personal-anonymous
     ingress:
       - tlsEnabled: false
         ports:
@@ -36,7 +36,7 @@ jobs:
             - name: JUPYTER_TOKEN
               value: testing
   - priority: 1
-    namespace: jupyter
+    namespace: personal-anonymous
     ingress:
       - tlsEnabled: false
         ports:

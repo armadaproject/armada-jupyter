@@ -40,12 +40,6 @@ def create_podspec_object(podspec_dict: dict) -> core_v1.PodSpec:
             "Only one container per pod is supported. Please check your podspec."
         )
 
-    # serviceport = job.podspec.containers[0].ports[0].containerPort
-    # container_name = job.podspec.containers[0].name
-    # namespace = job.namespace
-    # check these values are present in the podspec
-    # if not, raise an error
-
     if "containers" not in podspec_dict:
         raise ValueError("Please specify a container in your podspec.")
 
