@@ -3,9 +3,9 @@ Example of getting jupyter notebook running on a k8s cluster.
 """
 
 import os
-import grpc
 import time
 
+import grpc
 from armada_client.armada import submit_pb2
 from armada_client.client import ArmadaClient
 from armada_client.typings import EventType
