@@ -1,49 +1,30 @@
-# Kind Setup
-From [Kind Ingress Guide](https://kind.sigs.k8s.io/docs/user/ingress/)
+# Armada-Jupyter
 
-```bash
-kind create cluster --name demo-a --config files/kind.yml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-kubectl wait --namespace ingress-nginx \
-  --for=condition=ready pod \
-  --selector=app.kubernetes.io/component=controller \
-  --timeout=90s
+Armada Jupyter is a service for submitting JupyterLab Jobs onto Armada.
+
+## Prerequisites
+
+Please make sure you have [Armada](https://github.com/G-Research/armada) running.
+
+Ensure that the executor setting has been changed:
+
+```yaml
+kubernetes:
+  podDefaults:
+    ingress:
+      hostnameSuffix: "domain.com"
 ```
 
-```yml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-nodes:
-  - role: control-plane
-    image: "kindest/node:v1.21.10"
-    kubeadmConfigPatches:
-    - |
-      kind: InitConfiguration
-      nodeRegistration:
-        kubeletExtraArgs:
-          node-labels: "ingress-ready=true"
-    extraPortMappings:
-    - containerPort: 80
-      hostPort: 80
-      protocol: TCP
-    - containerPort: 443
-      hostPort: 443
-      protocol: TCP
+Then make sure that `*.jupyter.domain.com` resolves to your k8s cluster.
 
-  - role: worker
-    image: "kindest/node:v1.21.10"
-```
+## Cluster Preparation
 
-# Installing
+Armada-Jupyter will need a cluster setup with ingress. If you are using kind, you will need to do this differently.
 
-```bash
-pip install armada-client
-```
+Please follow the [kind](./docs/kind.md) guide to setup your cluster.
 
-# Running
+## Installation
 
-```bash
-python3 ./src/start.py
+Please following the following guide:
 
-python3 ./src/cancel.py
-```
+- [Quickstart](./docs/quickstart.md)
