@@ -29,11 +29,7 @@ export DISABLE_SSL=true
 
 ## Create the Required Python Queue
 
-This script by default will create a queue called `default`
-
-```bash
-python3 ./docs/dev/gen_queue.py
-```
+An example of working with queues can be found in the [queues example](https://github.com/G-Research/armada/blob/master/client/python/examples/queues.py) in the main Armada Repo.
 
 ## Run the Armada Client
 
