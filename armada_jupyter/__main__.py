@@ -1,5 +1,3 @@
-import time
-
 import grpc
 import typer
 from armada_client.client import ArmadaClient
@@ -48,9 +46,6 @@ def submit_worker(file: str, client: ArmadaClient):
 
         job_id = armada.submit(submission, job, client)
         typer.echo(f"Submitted Job {job_id} to Armada")
-
-        # Sleep to make sure that job-set-id is created
-        time.sleep(3)
 
         successful = check_job_status(client, submission, job_id)
 
