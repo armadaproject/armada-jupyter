@@ -39,11 +39,3 @@ nodes:
 ```bash
 pip install armada-client
 ```
-
-# Running
-
-```bash
-python3 ./src/start.py
-
-python3 ./src/cancel.py
-```
