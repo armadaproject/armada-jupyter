@@ -10,7 +10,7 @@ from armada_jupyter.podspec import create_podspec_object
 fake_podspec_full = core_v1.PodSpec(
     containers=[
         core_v1.Container(
-            name="JupyterLab",
+            name="jupyterlab",
             image="jupyter/tensorflow-notebook:latest",
             securityContext=core_v1.SecurityContext(runAsUser=1000),
             resources=core_v1.ResourceRequirements(

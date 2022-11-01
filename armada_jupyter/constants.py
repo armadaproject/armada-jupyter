@@ -1,5 +1,7 @@
 import os
 
+from armada_client.event import EventType
+
 
 class YMLSTR:
     """
@@ -19,9 +21,17 @@ class YMLSTR:
 
     QUEUE = "queue"
     JOB_SET_ID = "jobSetId"
-    TIMEOUT = "timeout"
+    WAIT_FOR_JOBS_RUNNING = "waitForJobsRunning"
 
 
 DISABLE_SSL = os.environ.get("DISABLE_SSL", False)
 HOST = os.environ.get("ARMADA_SERVER", "localhost")
 PORT = os.environ.get("ARMADA_PORT", "50051")
+
+
+TERMINAL_EVENTS = [
+    EventType.duplicate_found,
+    EventType.failed,
+    EventType.cancelled,
+    EventType.succeeded,
+]

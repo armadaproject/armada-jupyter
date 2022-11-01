@@ -34,7 +34,7 @@ The configuration file will be written in YAML, and will be passed to the Armada
 version: "0.1"
 
 submissions:
-- name: "JupyterLab"
+- name: "jupyterlab"
   image: "jupyter/tensorflow-notebook:latest"
   timeout: 36h
   resources:
