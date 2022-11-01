@@ -120,9 +120,9 @@ tester = ArmadaClient(
     [(fake_submission_general, JOB_ID)],
 )
 def test_check_job_status(fake_sub, job_id):
-    channel = grpc.insecure_channel("")
+    fake_channel = grpc.insecure_channel("")
 
-    job_successful = check_job_status(FakeArmadaClient(channel), fake_sub, job_id)
+    job_successful = check_job_status(FakeArmadaClient(fake_channel), fake_sub, job_id)
 
     assert job_successful is False
 
