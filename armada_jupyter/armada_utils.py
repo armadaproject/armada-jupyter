@@ -114,6 +114,11 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
         # find the job_id that matches the event
         if event.message.job_id == job_id:
 
+            if event.type == EventType.queued:
+                print("Job is Queued")
+                if not submission.wait_for_jobs_running:
+                    return True
+
             if event.type == EventType.running:
                 return True
 

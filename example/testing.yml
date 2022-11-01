@@ -2,6 +2,7 @@ version: "0.1"
 
 queue: default
 jobSetId: testing
+waitForJobsRunning: false
 jobs:
   - priority: 1
     namespace: personal-anonymous

@@ -37,6 +37,7 @@ fake_service = ServiceConfig(type=ServiceType.NodePort, ports=[8888])
 fake_submission_general = Submission(
     queue="default",
     job_set_id="job-set-1",
+    wait_for_jobs_running=True,
     jobs=[
         Job(
             podspec=fake_podspec_full,
@@ -141,3 +142,4 @@ def test_submission_creation(file, fake_submission):
         submission.jobs[0].services[0].ports[0]
         == fake_submission.jobs[0].services[0].ports[0]
     )
+    assert submission.wait_for_jobs_running == fake_submission.wait_for_jobs_running

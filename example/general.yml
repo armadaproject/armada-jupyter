@@ -2,6 +2,7 @@ version: "0.1"
 
 queue: default
 jobSetId: job-set-1
+waitForJobsRunning: true
 jobs:
   - priority: 1
     namespace: jupyter

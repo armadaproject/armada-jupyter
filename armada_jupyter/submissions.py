@@ -41,9 +41,12 @@ class Submission:
     Represents a Armada-Jupyter Submission
     """
 
-    def __init__(self, queue: str, job_set_id: str, jobs: List[Job]):
+    def __init__(
+        self, queue: str, job_set_id: str, wait_for_jobs_running: bool, jobs: List[Job]
+    ):
         self.queue = queue
         self.job_set_id = job_set_id
+        self.wait_for_jobs_running = wait_for_jobs_running
         self.jobs = jobs
 
     def __repr__(self) -> str:
@@ -101,7 +104,12 @@ def convert_to_submission(file: str) -> Submission:
             )
         )
 
-    return Submission(data[YMLSTR.QUEUE], data[YMLSTR.JOB_SET_ID], jobs)
+    return Submission(
+        data[YMLSTR.QUEUE],
+        data[YMLSTR.JOB_SET_ID],
+        data[YMLSTR.WAIT_FOR_JOBS_RUNNING],
+        jobs,
+    )
 
 
 def remap_ingress_protobuf_keys(config: Dict[str, str]):

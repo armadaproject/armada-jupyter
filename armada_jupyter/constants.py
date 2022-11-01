@@ -21,6 +21,7 @@ class YMLSTR:
 
     QUEUE = "queue"
     JOB_SET_ID = "jobSetId"
+    WAIT_FOR_JOBS_RUNNING = "waitForJobsRunning"
 
 
 DISABLE_SSL = os.environ.get("DISABLE_SSL", False)
