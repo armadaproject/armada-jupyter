@@ -10,7 +10,7 @@ from armada_jupyter.submissions import Job, Submission, convert_to_submission
 fake_podspec_full = core_v1.PodSpec(
     containers=[
         core_v1.Container(
-            name="JupyterLab",
+            name="jupyterlab",
             image="jupyter/tensorflow-notebook:latest",
             securityContext=core_v1.SecurityContext(runAsUser=1000),
             resources=core_v1.ResourceRequirements(
@@ -37,12 +37,12 @@ fake_service = ServiceConfig(type=ServiceType.NodePort, ports=[8888])
 fake_submission_general = Submission(
     queue="default",
     job_set_id="job-set-1",
-    timeout="100s",
+    wait_for_jobs_running=True,
     jobs=[
         Job(
             podspec=fake_podspec_full,
             priority=1,
-            namespace="adam",
+            namespace="jupyter",
             ingress=[fake_ingress],
             services=[fake_service],
             labels={"test": "test"},
@@ -66,7 +66,6 @@ def test_submission_creation(file, fake_submission):
 
     assert submission.queue == fake_submission.queue
     assert submission.job_set_id == fake_submission.job_set_id
-    assert submission.timeout == fake_submission.timeout
     assert (
         submission.jobs[0].podspec.containers[0].name
         == fake_submission.jobs[0].podspec.containers[0].name
@@ -143,3 +142,4 @@ def test_submission_creation(file, fake_submission):
         submission.jobs[0].services[0].ports[0]
         == fake_submission.jobs[0].services[0].ports[0]
     )
+    assert submission.wait_for_jobs_running == fake_submission.wait_for_jobs_running

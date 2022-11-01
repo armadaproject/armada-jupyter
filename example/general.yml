@@ -2,10 +2,10 @@ version: "0.1"
 
 queue: default
 jobSetId: job-set-1
-timeout: "100s"
+waitForJobsRunning: true
 jobs:
   - priority: 1
-    namespace: adam
+    namespace: jupyter
     labels:
       app: example
     annotations:
@@ -21,7 +21,7 @@ jobs:
     podSpec:
       restartPolicy: Never
       containers:
-        - name: JupyterLab
+        - name: jupyterlab
           imagePullPolicy: IfNotPresent
           image: jupyter/tensorflow-notebook:latest
           securityContext:
@@ -35,3 +35,6 @@ jobs:
               memory: 1Gi
               cpu: 1
               nvidia.com/gpu: 1
+          ports:
+            - containerPort: 8888
+              name: jupyterlab
