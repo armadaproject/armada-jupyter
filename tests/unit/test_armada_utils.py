@@ -15,7 +15,11 @@ from armada_client.k8s.io.apimachinery.pkg.api.resource import (
     generated_pb2 as api_resource,
 )
 from armada_client.typings import EventType
-from armada_jupyter.armada import check_job_status, construct_url, create_armada_request
+from armada_jupyter.armada_utils import (
+    check_job_status,
+    construct_url,
+    create_armada_request,
+)
 from armada_jupyter.submissions import Job, Submission
 
 JOB_ID = "test_job_id"
