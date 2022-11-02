@@ -89,9 +89,27 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
             event_stream = client.get_job_events_stream(
                 queue=submission.queue, job_set_id=submission.job_set_id
             )
-            break
 
-        # except grpc error
+            # Checks that job Started correct
+            for event in event_stream:
+
+                event = client.unmarshal_event_response(event)
+
+                # find the job_id that matches the event
+                if event.message.job_id == job_id:
+
+                    if event.type == EventType.queued:
+                        print("Job is Queued")
+                        if not submission.wait_for_jobs_running:
+                            return True
+
+                    if event.type == EventType.running:
+                        return True
+
+                    elif event.type in TERMINAL_EVENTS:
+                        return False
+
+            # except grpc error
         except grpc.RpcError as e:
 
             # only error if details are not found
@@ -105,24 +123,5 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
             else:
                 print(e.details())
                 raise e
-
-    # Checks that job Started correct
-    for event in event_stream:
-
-        event = client.unmarshal_event_response(event)
-
-        # find the job_id that matches the event
-        if event.message.job_id == job_id:
-
-            if event.type == EventType.queued:
-                print("Job is Queued")
-                if not submission.wait_for_jobs_running:
-                    return True
-
-            if event.type == EventType.running:
-                return True
-
-            elif event.type in TERMINAL_EVENTS:
-                return False
 
     return False
