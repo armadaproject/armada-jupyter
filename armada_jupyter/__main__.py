@@ -1,11 +1,9 @@
-import time
-
 import grpc
 import typer
 from armada_client.client import ArmadaClient
 
 from armada_jupyter import armada_utils, submissions
-from armada_jupyter.armada_utils import check_job_status, construct_url
+from armada_jupyter.armada_utils import check_job_status, construct_url, cancel_job
 from armada_jupyter.constants import DISABLE_SSL, HOST, PORT
 
 app = typer.Typer(help="CLI for Armada Jupyter.")
@@ -38,7 +36,7 @@ def cancel(url: str):
     Accepts a URL and cancels the corresponding job
     """
 
-    job_id = armada.cancel(url, armada_client)
+    job_id = cancel_job(url, armada_client)
     typer.echo(f"\nCancelled job at {url} with Job ID {job_id}")
 
 

@@ -79,7 +79,7 @@ def test_submit(fake_client, test_file, capsys):
 
 def test_app():
     file = "Not File"
-    result = runner.invoke(app, [file])
+    result = runner.invoke(app, ["submit", file])
 
     # This fails as the file cannot be found
     # We will make this test more complicated in future,

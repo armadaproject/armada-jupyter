@@ -7,7 +7,7 @@ import os
 import grpc
 import pytest
 from armada_client.client import ArmadaClient
-from armada_jupyter.armada import cancel
+from armada_jupyter.armada_utils import cancel_job
 
 
 JOB_ID = "testingID"
@@ -41,5 +41,5 @@ def test_submit(fake_client, test_url):
     channel = grpc.insecure_channel("")
     fake_client = fake_client(channel)
 
-    job_id = cancel(test_url, fake_client)
+    job_id = cancel_job(test_url, fake_client)
     assert job_id == JOB_ID
