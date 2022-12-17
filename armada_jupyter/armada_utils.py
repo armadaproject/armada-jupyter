@@ -133,7 +133,7 @@ def cancel_job(url: str, client: ArmadaClient) -> str:
     Cancels the job associated with the URL.
     """
 
-    job_id = url.split("-")[-2]
-    client.cancel_jobs(job_id)
+    job_id = url.split("-")[-3]
+    client.cancel_jobs(job_id=job_id)
 
     return job_id
