@@ -3,6 +3,7 @@ Example of getting jupyter notebook running on a k8s cluster.
 """
 
 import os
+import re
 import time
 
 import grpc
@@ -138,7 +139,14 @@ def cancel_job(url: str, client: ArmadaClient) -> str:
     Cancels the job associated with the URL.
     """
 
-    job_id = url.split("-")[-3]
+    # regex to find anything between armada- and -0
+    result = re.search(r"armada-(.+?)-0", url)
+
+    if result is None:
+        raise Exception("Could not find job_id in URL")
+
+    job_id = result.group(1)
+
     client.cancel_jobs(job_id=job_id)
 
     return job_id
