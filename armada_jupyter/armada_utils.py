@@ -101,7 +101,10 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
                     # If queued or pending
                     # Note: In theory this could just be pending, but incase that event
                     # is missed, we also check for queued.
-                    if event.type == EventType.queued or event.type == EventType.pending:
+                    if (
+                        event.type == EventType.queued
+                        or event.type == EventType.pending
+                    ):
                         print("Job is Queued")
                         if not submission.wait_for_jobs_running:
                             return True
