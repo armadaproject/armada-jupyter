@@ -2,9 +2,10 @@ version: "0.1"
 
 queue: default
 jobSetId: testing
+waitForJobsRunning: false
 jobs:
   - priority: 1
-    namespace: jupyter
+    namespace: personal-anonymous
     ingress:
       - tlsEnabled: false
         ports:
@@ -36,7 +37,7 @@ jobs:
             - name: JUPYTER_TOKEN
               value: testing
   - priority: 1
-    namespace: jupyter
+    namespace: personal-anonymous
     ingress:
       - tlsEnabled: false
         ports:

@@ -4,8 +4,8 @@ import grpc
 import typer
 from armada_client.client import ArmadaClient
 
-from armada_jupyter import armada, submissions
-from armada_jupyter.armada import check_job_status, construct_url
+from armada_jupyter import armada_utils, submissions
+from armada_jupyter.armada_utils import check_job_status, construct_url
 from armada_jupyter.constants import DISABLE_SSL, HOST, PORT
 
 app = typer.Typer(help="CLI for Armada Jupyter.")
@@ -56,11 +56,8 @@ def submit_worker(file: str, client: ArmadaClient):
 
     for job in submission.jobs:
 
-        job_id = armada.submit(submission, job, client)
+        job_id = armada_utils.submit(submission, job, client)
         typer.echo(f"Submitted Job {job_id} to Armada")
-
-        # Sleep to make sure that job-set-id is created
-        time.sleep(3)
 
         successful = check_job_status(client, submission, job_id)
 
@@ -69,8 +66,12 @@ def submit_worker(file: str, client: ArmadaClient):
 
         else:
             url = construct_url(job, job_id)
-            typer.echo(f"Job {job_id} started")
-            typer.echo(f"URL: {url}")
+
+            if submission.wait_for_jobs_running:
+                typer.echo(f"Job {job_id} is running at: {url}")
+
+            else:
+                typer.echo(f"Job {job_id} will be running at: {url}")
 
     typer.echo("Completed all submissions!\n\n")
 

@@ -3,7 +3,9 @@ Example of getting jupyter notebook running on a k8s cluster.
 """
 
 import os
+import time
 
+import grpc
 from armada_client.armada import submit_pb2
 from armada_client.client import ArmadaClient
 from armada_client.typings import EventType
@@ -30,7 +32,7 @@ def create_armada_request(
 
 def submit(submission: Submission, job: Job, client: ArmadaClient) -> str:
     """
-    Starts a workflow for jupyter notebook.
+    Submits a workflow for jupyter notebooks.
     """
 
     queue = submission.queue
@@ -73,10 +75,36 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
     Returns True if the job is running.
     """
 
-    # complete an events loop
-    event_stream = client.get_job_events_stream(
-        queue=submission.queue, job_set_id=submission.job_set_id
-    )
+    # There should never be a need for more than 3 tries,
+    # as the job-set should be created relatively quickly.
+    tries = 3
+
+    while True:
+
+        if tries == 0:
+            raise Exception("Failed to start job - could not find event stream")
+
+        try:
+            # complete an events loop
+            event_stream = client.get_job_events_stream(
+                queue=submission.queue, job_set_id=submission.job_set_id
+            )
+            break
+
+        # except grpc error
+        except grpc.RpcError as e:
+
+            # only error if details are not found
+            if "testing for queue default" in e.details():
+
+                tries -= 1
+                time.sleep(1)
+
+                continue
+
+            else:
+                print(e.details())
+                raise e
 
     # Checks that job Started correct
     for event in event_stream:
@@ -86,6 +114,11 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
         # find the job_id that matches the event
         if event.message.job_id == job_id:
 
+            if event.type == EventType.queued:
+                print("Job is Queued")
+                if not submission.wait_for_jobs_running:
+                    return True
+
             if event.type == EventType.running:
                 return True
 
@@ -93,14 +126,3 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
                 return False
 
     return False
-
-
-def cancel(url: str, client: ArmadaClient) -> str:
-    """
-    Cancels the job associated with the URL.
-    """
-
-    job_id = url.split("-")[-2]
-    client.cancel_jobs(job_id)
-
-    return job_id
