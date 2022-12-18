@@ -3,7 +3,6 @@ Testing of the Armada utils functions
 """
 
 import os
-from concurrent import futures
 
 import grpc
 import pytest
@@ -15,17 +14,6 @@ from armada_jupyter.armada_utils import (
 )
 
 os.environ["ARMADA_DOMAIN"] = "domain.com"
-
-
-@pytest.fixture(scope="session")
-def server_mock():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    server.add_insecure_port("[::]:12345")
-    server.start()
-
-    yield
-    server.stop(False)
-
 
 channel = grpc.insecure_channel(target="127.0.0.1:12345")
 tester = ArmadaClient(

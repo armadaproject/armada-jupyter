@@ -2,6 +2,7 @@
 File to store default objects for testing
 """
 
+from concurrent import futures
 from unittest.mock import Mock
 
 import grpc
@@ -156,3 +157,13 @@ def job_id_standard():
     Return a fake job id
     """
     return JOB_ID
+
+
+@pytest.fixture(scope="session")
+def server_mock():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    server.add_insecure_port("[::]:12345")
+    server.start()
+
+    yield
+    server.stop(False)
