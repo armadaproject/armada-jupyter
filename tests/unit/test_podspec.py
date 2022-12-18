@@ -1,33 +1,7 @@
 import pytest
 import yaml
 
-from armada_client.k8s.io.api.core.v1 import generated_pb2 as core_v1
-from armada_client.k8s.io.apimachinery.pkg.api.resource import (
-    generated_pb2 as api_resource,
-)
 from armada_jupyter.podspec import create_podspec_object
-
-fake_podspec_full = core_v1.PodSpec(
-    containers=[
-        core_v1.Container(
-            name="jupyterlab",
-            image="jupyter/tensorflow-notebook:latest",
-            securityContext=core_v1.SecurityContext(runAsUser=1000),
-            resources=core_v1.ResourceRequirements(
-                requests={
-                    "cpu": api_resource.Quantity(string="1"),
-                    "memory": api_resource.Quantity(string="1Gi"),
-                    "nvidia.com/gpu": api_resource.Quantity(string="1"),
-                },
-                limits={
-                    "cpu": api_resource.Quantity(string="1"),
-                    "memory": api_resource.Quantity(string="1Gi"),
-                    "nvidia.com/gpu": api_resource.Quantity(string="1"),
-                },
-            ),
-        )
-    ],
-)
 
 
 @pytest.mark.parametrize(
@@ -35,13 +9,15 @@ fake_podspec_full = core_v1.PodSpec(
     [
         (
             "tests/files/general.yml",
-            fake_podspec_full,
+            "fake_podspec_full",
         )
     ],
 )
-def test_get_podspec(file, fake_podspec):
+def test_get_podspec(file, fake_podspec, request):
     with open(file, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
+
+    fake_podspec = request.getfixturevalue(fake_podspec)
 
     podspec = create_podspec_object(data["jobs"][0]["podSpec"])
 

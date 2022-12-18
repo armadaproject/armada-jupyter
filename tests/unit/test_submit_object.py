@@ -1,55 +1,6 @@
 import pytest
 
-from armada_client.armada.submit_pb2 import IngressConfig, ServiceConfig, ServiceType
-from armada_client.k8s.io.api.core.v1 import generated_pb2 as core_v1
-from armada_client.k8s.io.apimachinery.pkg.api.resource import (
-    generated_pb2 as api_resource,
-)
-from armada_jupyter.submissions import Job, Submission, convert_to_submission
-
-fake_podspec_full = core_v1.PodSpec(
-    containers=[
-        core_v1.Container(
-            name="jupyterlab",
-            image="jupyter/tensorflow-notebook:latest",
-            securityContext=core_v1.SecurityContext(runAsUser=1000),
-            resources=core_v1.ResourceRequirements(
-                requests={
-                    "cpu": api_resource.Quantity(string="1"),
-                    "memory": api_resource.Quantity(string="1Gi"),
-                    "nvidia.com/gpu": api_resource.Quantity(string="1"),
-                },
-                limits={
-                    "cpu": api_resource.Quantity(string="1"),
-                    "memory": api_resource.Quantity(string="1Gi"),
-                    "nvidia.com/gpu": api_resource.Quantity(string="1"),
-                },
-            ),
-        )
-    ],
-)
-
-fake_ingress = IngressConfig(ports=[8888], tls_enabled=False)
-
-fake_service = ServiceConfig(type=ServiceType.NodePort, ports=[8888])
-
-
-fake_submission_general = Submission(
-    queue="default",
-    job_set_id="job-set-1",
-    wait_for_jobs_running=True,
-    jobs=[
-        Job(
-            podspec=fake_podspec_full,
-            priority=1,
-            namespace="jupyter",
-            ingress=[fake_ingress],
-            services=[fake_service],
-            labels={"test": "test"},
-            annotations={"test.com/annotation": "true"},
-        )
-    ],
-)
+from armada_jupyter.submissions import convert_to_submission
 
 
 @pytest.mark.parametrize(
@@ -57,12 +8,14 @@ fake_submission_general = Submission(
     [
         (
             "tests/files/general.yml",
-            fake_submission_general,
+            "fake_submission_general",
         )
     ],
 )
-def test_submission_creation(file, fake_submission):
+def test_submission_creation(file, fake_submission, request):
     submission = convert_to_submission(file)
+
+    fake_submission = request.getfixturevalue(fake_submission)
 
     assert submission.queue == fake_submission.queue
     assert submission.job_set_id == fake_submission.job_set_id
