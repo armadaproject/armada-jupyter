@@ -3,7 +3,6 @@ Example of getting jupyter notebook running on a k8s cluster.
 """
 
 import os
-import re
 import time
 
 import grpc
