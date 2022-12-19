@@ -132,21 +132,3 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
                 raise e
 
     return False
-
-
-def cancel_job(url: str, client: ArmadaClient) -> str:
-    """
-    Cancels the job associated with the URL.
-    """
-
-    # regex to find anything between armada- and -0
-    result = re.search(r"armada-(.+?)-0", url)
-
-    if result is None:
-        raise Exception("Could not find job_id in URL")
-
-    job_id = result.group(1)
-
-    client.cancel_jobs(job_id=job_id)
-
-    return job_id
