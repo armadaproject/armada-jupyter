@@ -59,12 +59,12 @@ def construct_url(job: Job, job_id: str) -> str:
     """
 
     domain = os.environ.get("ARMADA_DOMAIN", "domain.com")
-    serviceport = job.podspec.containers[0].ports[0].containerPort
-    container_name = job.podspec.containers[0].name
+    container = job.podspec.containers[0]
+    serviceport = job.services[0].ports[0]
     namespace = job.namespace
 
     return (
-        f"http://{container_name}-{serviceport}-"
+        f"http://{container.name}-{serviceport}-"
         f"armada-{job_id}-0.{namespace}.{domain}"
     )
 
@@ -92,9 +92,9 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
             )
 
             # Checks that job Started correct
-            for event in event_stream:
+            for event_wrapped in event_stream:
 
-                event = client.unmarshal_event_response(event)
+                event = client.unmarshal_event_response(event_wrapped)
 
                 # find the job_id that matches the event
                 if event.message.job_id == job_id:
