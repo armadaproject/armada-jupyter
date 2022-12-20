@@ -95,6 +95,7 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
             # Checks that job Started correct
             for event_wrapped in event_stream:
 
+                # Ignore type as CI is not happy with this
                 event: Event = client.unmarshal_event_response(
                     event_wrapped
                 )  # type: ignore
