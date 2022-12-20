@@ -3,6 +3,7 @@ Testing the submit function in __main__.py
 """
 
 import os
+from unittest.mock import Mock
 
 import grpc
 import pytest
@@ -36,6 +37,11 @@ class FakeArmadaClient(ArmadaClient):
 
         job_id = job_id.replace("-", "")
         assert job_id == JOB_ID
+
+        resp = Mock()
+        resp.cancelled_ids = ["test"]
+
+        return resp
 
 
 @pytest.mark.parametrize(

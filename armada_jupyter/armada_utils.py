@@ -154,7 +154,9 @@ def cancel_job(url: str, client: ArmadaClient) -> str:
 
     resp = client.cancel_jobs(job_id=job_id)
 
-    if resp.cancelled_ids[0] != job_id:
+    # TODO: Remove type ignore when armada_client
+    # 0.2.6 is released
+    if len(resp.cancelled_ids) != 1:  # type: ignore
         raise Exception("Failed to cancel job.")
 
     return job_id
