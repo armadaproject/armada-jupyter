@@ -101,6 +101,11 @@ class FakeArmadaClient(ArmadaClient):
         job_id = job_id.replace("-", "")
         assert job_id == JOB_ID
 
+        resp = Mock()
+        resp.cancelled_ids = ["test"]
+
+        return resp
+
 
 @pytest.fixture(scope="module")
 def fake_armada_client():

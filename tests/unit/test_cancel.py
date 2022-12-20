@@ -3,7 +3,6 @@ Testing the submit function in __main__.py
 """
 
 import os
-from unittest.mock import Mock
 
 import pytest
 from armada_jupyter.armada_utils import cancel_job
