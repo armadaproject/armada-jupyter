@@ -95,7 +95,9 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
             # Checks that job Started correct
             for event_wrapped in event_stream:
 
-                event: Event = client.unmarshal_event_response(event_wrapped)  # type: ignore
+                event: Event = client.unmarshal_event_response(
+                    event_wrapped
+                )  # type: ignore
 
                 # find the job_id that matches the event
                 if event.message.job_id == job_id:
