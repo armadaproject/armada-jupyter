@@ -96,9 +96,10 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
             for event_wrapped in event_stream:
 
                 # Ignore type as CI is not happy with this
+                # TODO: Remove when armada_client 0.2.6 is released
                 event: Event = client.unmarshal_event_response(
-                    event_wrapped
-                )  # type: ignore
+                    event_wrapped  # type: ignore
+                )
 
                 # find the job_id that matches the event
                 if event.message.job_id == job_id:
