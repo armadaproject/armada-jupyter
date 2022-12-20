@@ -9,6 +9,7 @@ import time
 import grpc
 from armada_client.armada import submit_pb2
 from armada_client.client import ArmadaClient
+from armada_client.event import Event
 from armada_client.typings import EventType
 
 from armada_jupyter.constants import TERMINAL_EVENTS
@@ -92,9 +93,13 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
             )
 
             # Checks that job Started correct
-            for event in event_stream:
+            for event_wrapped in event_stream:
 
-                event = client.unmarshal_event_response(event)
+                # Ignore type as CI is not happy with this
+                # TODO: Remove when armada_client 0.2.6 is released
+                event: Event = client.unmarshal_event_response(
+                    event_wrapped  # type: ignore
+                )
 
                 # find the job_id that matches the event
                 if event.message.job_id == job_id:
@@ -147,6 +152,11 @@ def cancel_job(url: str, client: ArmadaClient) -> str:
 
     job_id = result.group(1)
 
-    client.cancel_jobs(job_id=job_id)
+    resp = client.cancel_jobs(job_id=job_id)
+
+    # TODO: Remove type ignore when armada_client
+    # 0.2.6 is released
+    if len(resp.cancelled_ids) != 1:  # type: ignore
+        raise Exception("Failed to cancel job.")
 
     return job_id
