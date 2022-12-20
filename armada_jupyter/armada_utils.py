@@ -10,6 +10,7 @@ import grpc
 from armada_client.armada import submit_pb2
 from armada_client.client import ArmadaClient
 from armada_client.typings import EventType
+from armada_client.event import Event
 
 from armada_jupyter.constants import TERMINAL_EVENTS
 from armada_jupyter.submissions import Job, Submission
@@ -94,7 +95,7 @@ def check_job_status(client: ArmadaClient, submission: Submission, job_id: str) 
             # Checks that job Started correct
             for event_wrapped in event_stream:
 
-                event = client.unmarshal_event_response(event_wrapped)
+                event: Event = client.unmarshal_event_response(event_wrapped)
 
                 # find the job_id that matches the event
                 if event.message.job_id == job_id:
