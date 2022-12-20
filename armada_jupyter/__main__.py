@@ -33,7 +33,11 @@ def submit(file: str):
 @app.command()
 def cancel(url: str):
     """
-    Accepts a URL and cancels the corresponding job
+    Accepts a URL and cancels the corresponding job.
+
+    This should be the URL that was returned when the job was submitted.
+
+    i.e https://jupyterlab-8888-armada-JOBID-0.jupyter.domain:8888
     """
 
     job_id = cancel_job(url, armada_client)

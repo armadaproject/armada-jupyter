@@ -152,6 +152,9 @@ def cancel_job(url: str, client: ArmadaClient) -> str:
 
     job_id = result.group(1)
 
-    client.cancel_jobs(job_id=job_id)
+    resp = client.cancel_jobs(job_id=job_id)
+
+    if resp.cancelled_ids[0] != job_id:
+        raise Exception("Failed to cancel job.")
 
     return job_id
