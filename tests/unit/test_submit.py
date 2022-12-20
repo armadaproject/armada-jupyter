@@ -9,10 +9,7 @@ import grpc
 import pytest
 from armada_client.client import ArmadaClient
 from armada_client.typings import EventType
-from armada_jupyter.__main__ import app, submit_worker
-from typer.testing import CliRunner
-
-runner = CliRunner()
+from armada_jupyter.__main__ import submit_worker
 
 TEST_FILE = "tests/files/general.yml"
 JOB_ID = "test_job_id"
@@ -75,15 +72,3 @@ def test_submit(fake_client, test_file, capsys):
     assert (
         "http://jupyterlab-8888-armada-test_job_id-0.jupyter.domain.com" in captured.out
     ), captured.out
-
-
-def test_app():
-    file = "Not File"
-    result = runner.invoke(app, ["submit", file])
-
-    # This fails as the file cannot be found
-    # We will make this test more complicated in future,
-    # But for now it should be fine
-    assert result.exit_code == 1, result.stdout
-    assert "Getting Submission Objects" in result.stdout, result.stdout
-    assert file in result.stdout, result.stdout

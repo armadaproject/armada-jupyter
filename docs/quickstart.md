@@ -34,7 +34,13 @@ An example of working with queues can be found in the [queues example](https://g
 ## Run the Armada Client
 
 ```bash
-python3 -m armada_jupyter ./example/testing.yml
+python3 -m armada_jupyter submit ./example/testing.yml
+
+Getting Submission Objects from ./example/testing.yml
+Submitting 2 Jobs to Armada
+Submitted Job 01gmqjyvrvha22j4sjw1h2fv0v to Armada
+Job is Queued
+Job 01gmqjyvrvha22j4sjw1h2fv0v will be running at: http://jupyterlab-8888-armada-01gmqjyvrvha22j4sjw1h2fv0v-0.personal-anonymous.mydomain:8888
 ```
 
 This will show the URL's that you can use to access the JupyterLab instance.
@@ -50,10 +56,14 @@ You can access the JupyterLab instance by using the URL's that are printed out b
 
 Please see the [dnsrecords documentation](./docs/dnsrecords.md) guide for more information on how to access the JupyterLab instance.
 
-## Cancelling all Jobs
+## Cancelling a Job
 
-**NOTE: This will kill all jobs running on queue `default` and job-set-id `testing`**
+To cancel a job you can use the following command:
 
 ```
-python3 ./docs/dev/cancel.py
+python3 -m armada_jupyter cancel {URL}
 ```
+
+URL should be the URL returned by the submit command.
+
+i.e https://jupyterlab-8888-armada-JOBID-0.jupyter.domain:8888
