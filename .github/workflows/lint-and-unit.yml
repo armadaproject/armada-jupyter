@@ -53,3 +53,9 @@ jobs:
     - name: Running tox for unit tests
       run: |
         tox
+
+    - name: Upload coverage to codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: coverage.xml
+        verbose: true
