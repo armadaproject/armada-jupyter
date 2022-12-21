@@ -77,7 +77,7 @@ def inject_url(job: Job) -> Tuple[Job, str, str]:
     if job.annotations is None:
         job.annotations = {}
 
-    job.annotations["armada/armada-jupyter-url"] = f"{url_start}[JOBID]{url_end}"
+    job.annotations["armadaproject.io/jupyter-url"] = f"{url_start}[JOBID]{url_end}"
 
     return (
         job,

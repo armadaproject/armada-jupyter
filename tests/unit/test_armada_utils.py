@@ -54,7 +54,8 @@ def test_construct_url(fake_job, request):
     assert url_end == "-0.jupyter.domain.com"
 
     assert (
-        job.annotations["armada/armada-jupyter-url"] == f"{url_start}[JOBID]{url_end}"
+        job.annotations["armadaproject.io/jupyter-url"]
+        == f"{url_start}[JOBID]{url_end}"
     )
 
 
