@@ -9,7 +9,7 @@ import pytest
 from armada_client.client import ArmadaClient
 from armada_jupyter.armada_utils import (
     check_job_status,
-    construct_url,
+    inject_url,
     create_armada_request,
 )
 
@@ -41,17 +41,20 @@ def test_check_job_status(fake_sub, job_id, fake_armada_client, request):
 
 
 @pytest.mark.parametrize(
-    "fake_job, job_id",
-    [("fake_job_general", "job_id_standard")],
+    "fake_job",
+    [("fake_job_general")],
 )
-def test_construct_url(fake_job, job_id, job_id_standard, request):
+def test_construct_url(fake_job, request):
 
     fake_job = request.getfixturevalue(fake_job)
-    job_id = request.getfixturevalue(job_id)
 
-    url = construct_url(fake_job, job_id)
+    job, url_start, url_end = inject_url(fake_job)
+
+    assert url_start == "http://jupyterlab-8888-armada-"
+    assert url_end == "-0.jupyter.domain.com"
+
     assert (
-        url == f"http://jupyterlab-8888-armada-{job_id_standard}-0.jupyter.domain.com"
+        job.annotations["armada/armada-jupyter-url"] == f"{url_start}[JOBID]{url_end}"
     )
 
 

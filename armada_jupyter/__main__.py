@@ -3,7 +3,7 @@ import typer
 from armada_client.client import ArmadaClient
 
 from armada_jupyter import armada_utils, submissions
-from armada_jupyter.armada_utils import check_job_status, construct_url, cancel_job
+from armada_jupyter.armada_utils import check_job_status, cancel_job
 from armada_jupyter.constants import DISABLE_SSL, HOST, PORT
 
 app = typer.Typer(help="CLI for Armada Jupyter.")
@@ -58,7 +58,7 @@ def submit_worker(file: str, client: ArmadaClient):
 
     for job in submission.jobs:
 
-        job_id = armada_utils.submit(submission, job, client)
+        job_id, url = armada_utils.submit(submission, job, client)
         typer.echo(f"Submitted Job {job_id} to Armada")
 
         successful = check_job_status(client, submission, job_id)
@@ -67,7 +67,6 @@ def submit_worker(file: str, client: ArmadaClient):
             typer.echo(f"Job {job_id} failed to start")
 
         else:
-            url = construct_url(job, job_id)
 
             if submission.wait_for_jobs_running:
                 typer.echo(f"Job {job_id} is running at: {url}")
