@@ -5,6 +5,7 @@ Example of getting jupyter notebook running on a k8s cluster.
 import os
 import re
 import time
+from typing import Tuple
 
 import grpc
 from armada_client.armada import submit_pb2
@@ -32,13 +33,16 @@ def create_armada_request(
     )
 
 
-def submit(submission: Submission, job: Job, client: ArmadaClient) -> str:
+def submit(submission: Submission, job: Job, client: ArmadaClient) -> Tuple[str, str]:
     """
     Submits a workflow for jupyter notebooks.
     """
 
     queue = submission.queue
     job_set_id = submission.job_set_id
+
+    # Inject the URL for the Jupyter Notebook
+    job, url_start, url_end = inject_url(job)
 
     # Create the PodSpec for the job
     job_request_items = [create_armada_request(job, client)]
@@ -47,12 +51,14 @@ def submit(submission: Submission, job: Job, client: ArmadaClient) -> str:
     )
 
     job_id = resp.job_response_items[0].job_id
-    return job_id
+    url = f"{url_start}{job_id}{url_end}"
+    return job_id, url
 
 
-def construct_url(job: Job, job_id: str) -> str:
+def inject_url(job: Job) -> Tuple[Job, str, str]:
     """
-    Constructs the URL for the Jupyter Notebook.
+    Inject the URL for the Jupyter Notebook. Return the
+    url withouth the job_id.
 
     The layout of this URL is defined here:
     https://github.com/G-Research/armada/blob/master/internal/
@@ -64,9 +70,19 @@ def construct_url(job: Job, job_id: str) -> str:
     serviceport = job.services[0].ports[0]
     namespace = job.namespace
 
+    url_start = f"http://{container.name}-{serviceport}-armada-"
+    url_end = f"-0.{namespace}.{domain}"
+
+    # add url to an annotation in the job
+    if job.annotations is None:
+        job.annotations = {}
+
+    job.annotations["armadaproject.io/jupyter-url"] = f"{url_start}[JOBID]{url_end}"
+
     return (
-        f"http://{container.name}-{serviceport}-"
-        f"armada-{job_id}-0.{namespace}.{domain}"
+        job,
+        url_start,
+        url_end,
     )
 
 
